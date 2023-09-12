@@ -46,4 +46,4 @@ Kõigi probleemide, tagasiside või funktsioonitaotluste korral avage küsimus [
 
 ## Litsents
 
-See projekt on litsentseeritud MIT litsentsi alusel. Vaadake [LICENSE.md](/LICENSE.md) üksikasjade saamiseks.
+Semu ei eksisteeri ühegi vabavaralise litsentsi all. Semu kopeerimine, jagamine, või muutmine on keelatud.
