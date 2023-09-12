@@ -1,7 +1,7 @@
 # Semu: Heliaktiveeritud ChatGPT sild
 Semu on dünaamiline tarkvaralahendus, mis võimaldab heli kaudu suhelda ChatGPT-ga. Semu kaudu teisendatakse helisisendid tekstiks, töödeldakse ChatGPT-ga ja vastused teisendatakse tagasi heliks, tagades loomuliku vestlusliku kogemuse.
 
-![Semu Logo](path/to/logo.png)
+![Semu Logo](logo.png)
 
 ## Funktsioonid
 - **Heli aktiveerimine**: Alustab kasutaja häälekäskluste tuvastamisel.
