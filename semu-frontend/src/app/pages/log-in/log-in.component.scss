@@ -156,6 +156,11 @@
   line-height: normal;
   padding: 10px 70px;
   cursor: pointer;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.enter-button:hover {
+  box-shadow: 0 2px 7px 0 rgba(0,0,0,0.75);
 }
 
 .register-button {
@@ -166,6 +171,10 @@
   line-height: normal;
   margin-top: 25px;
   cursor: pointer;
+}
+
+.register-button:hover {
+  text-decoration: underline;
 }
 
 .bottom-nav-links {
@@ -185,6 +194,9 @@
     cursor: pointer;
     color: #000000;
     text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
   }
 }
 
