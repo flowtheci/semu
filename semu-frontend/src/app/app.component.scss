@@ -1,0 +1,13 @@
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background-image: url('../assets/bg1.png');
+  background-size: cover;
+  flex-direction: column;
+  align-items: center;
+}
+

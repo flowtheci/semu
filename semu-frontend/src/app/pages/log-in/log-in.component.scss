@@ -1,0 +1,199 @@
+.content-container {
+  position: relative;
+  background: #062C43;
+  width: 1056px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 15px;
+  box-shadow: 0 4px 10px 10px #00000080;
+  border-radius: 10px;
+  margin-top: -10px;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.logo {
+  width: 256px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.title-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 48px;
+  font-weight: 400;
+  color: #FFFFFF;
+  margin-bottom: 50px;
+}
+
+.log-in-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-bottom: 10px;
+}
+
+.action-button-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.action-button {
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 15px;
+  gap: 15px;
+  cursor: pointer;
+  -webkit-box-shadow: 0 2px 7px 0 rgba(0,0,0,0.75);
+  -moz-box-shadow: 0 2px 7px 0 rgba(0,0,0,0.75);
+  box-shadow: 0 2px 7px 0 rgba(0,0,0,0.75);
+
+  svg {
+    width: 24px;
+    height: 24px;
+    color: #FFFFFF;
+  }
+}
+
+.action-button.facebook {
+  background: #1877F2;
+}
+
+.action-button.google {
+  background: #FFFFFF;
+}
+
+.action-button.apple {
+  background: #000000;
+}
+
+.or-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  color: #FFFFFF;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+.divider {
+  width: 500px;
+  height: 0;
+  margin-bottom: 15px;
+  border: #CCCCCC 1px dashed;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.form-input {
+  font-family: 'Montserrat', sans-serif;
+  width: 500px;
+  font-weight: 900;
+  font-size: 20px;
+  background-color: #EFEFEF;
+  border-radius: 30px;
+  padding: 8px 16px;
+  border: 0 solid #FFFFFF;
+  transition: focus 0.3s ease-in-out;
+  margin-bottom: 15px;
+}
+
+.form-input::placeholder {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  color: #515151;
+}
+
+.form-input:focus {
+  outline: none;
+  box-shadow: 0 2px 7px 0 rgba(0,0,0,0.75);
+}
+
+.forgot-password-text {
+  font-family: 'Montserrat', sans-serif;
+  margin-top: -12px;
+  font-size: 16px;
+  font-weight: 300;
+  color: #FFFFFF;
+  margin-bottom: 15px;
+  letter-spacing: 0.6px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.bottom-menu-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
+.enter-button {
+  border-radius: 40px;
+  background: #054569;
+  color: #FFF;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  padding: 10px 70px;
+  cursor: pointer;
+}
+
+.register-button {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  margin-top: 25px;
+  cursor: pointer;
+}
+
+.bottom-nav-links {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: absolute;
+  bottom: 15px;
+  width: 950px;
+  margin: 0 15px;
+  a {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    cursor: pointer;
+    color: #000000;
+    text-decoration: none;
+  }
+}
+
+.background-illustration {
+  position: absolute;
+  bottom: -75px;
+  z-index: -1;
+}
+
+
+
+
