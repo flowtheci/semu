@@ -3,6 +3,9 @@ Semu on dünaamiline tarkvaralahendus, mis võimaldab heli kaudu suhelda ChatGPT
 
 ![Semu Logo](logo.png)
 
+## Proovi Semu
+Semu veebikeskkonna värskeim versioon on alati saadav siit: https://semu.vercel.app/
+
 ## Funktsioonid
 - **Heli aktiveerimine**: Alustab kasutaja häälekäskluste tuvastamisel.
 - **Teksti teisendamine**: Teisendab helisisendi tõhusalt tekstiks.
