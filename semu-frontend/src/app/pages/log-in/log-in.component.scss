@@ -188,9 +188,10 @@
   }
 }
 
+$rate: 0.08056; // This is approximately -75/931
 .background-illustration {
   position: absolute;
-  bottom: -75px;
+  bottom: calc(-75px - #{$rate} * (931px - 100vh));
   z-index: -1;
 }
 
