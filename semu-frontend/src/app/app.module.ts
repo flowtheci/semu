@@ -6,13 +6,15 @@ import { AppComponent } from './app.component';
 import { LogInComponent } from './pages/log-in/log-in.component';
 import { MainComponent } from './pages/main/main.component';
 import { SideBarComponent } from './components/side-bar/side-bar.component';
+import { ChatWindowComponent } from './pages/chat-window/chat-window.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LogInComponent,
     MainComponent,
-    SideBarComponent
+    SideBarComponent,
+    ChatWindowComponent
   ],
   imports: [
     BrowserModule,

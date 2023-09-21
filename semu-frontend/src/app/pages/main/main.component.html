@@ -1,1 +1,2 @@
-<app-side-bar></app-side-bar>
+<app-side-bar (isOpenChange)="openToggled($event)"></app-side-bar>
+<app-chat-window [isOpen]="_sidebarOpen"></app-chat-window>

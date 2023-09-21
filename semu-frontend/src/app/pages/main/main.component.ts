@@ -7,4 +7,12 @@ import { Component } from '@angular/core';
 })
 export class MainComponent {
 
+  _sidebarOpen = false;
+
+  openToggled($event: boolean): void {
+    this._sidebarOpen = $event;
+  }
+
+
+
 }
