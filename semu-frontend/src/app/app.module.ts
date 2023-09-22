@@ -8,6 +8,7 @@ import { MainComponent } from './pages/main/main.component';
 import { SideBarComponent } from './components/side-bar/side-bar.component';
 import { ChatWindowComponent } from './pages/chat-window/chat-window.component';
 import { TypewriterComponent } from './components/typewriter/typewriter.component';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { TypewriterComponent } from './components/typewriter/typewriter.componen
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

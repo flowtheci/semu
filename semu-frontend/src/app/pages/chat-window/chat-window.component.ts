@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Message} from 'src/app/model/message';
+import {SemuService} from "../../service/semu.service";
 
 
 @Component({
@@ -11,8 +12,14 @@ export class ChatWindowComponent implements OnInit {
 
   @Input() isOpen = false;
 
-  messages: Message[] | undefined;
+  messages: Message[] = [];
   messageIndex = 0;
+
+  constructor(private semuService: SemuService) {
+
+
+  }
+
 
   ngOnInit() {
     this.messages = [
@@ -58,14 +65,14 @@ export class ChatWindowComponent implements OnInit {
   }
 
   onTypingFinished(): void {
-    if (this.messageIndex < this.messages!.length - 1) {
+    if (this.messageIndex < this.messages.length - 1) {
       this.messageIndex++;
     }
   }
 
-  onSendMessage(message: string, elementRef: HTMLTextAreaElement): void {
-    this.messages!.push({
-      id: this.messages!.length,
+  async onSendMessage(message: string, elementRef: HTMLTextAreaElement): Promise<void> {
+    this.messages.push({
+      id: this.messages.length,
       content: message,
       timestamp: new Date(),
       isUser: true,
@@ -73,6 +80,11 @@ export class ChatWindowComponent implements OnInit {
     });
     this.messageIndex++;
     elementRef.value = '';
+
+    const response: Message = await this.semuService.responseAsMessage(message, this.messages.length);
+    console.warn(response)
+    this.messages.push(response);
+    this.messageIndex++;
   }
 
   adjustTextareaHeight(event: any): void {
