@@ -7,6 +7,7 @@ import { LogInComponent } from './pages/log-in/log-in.component';
 import { MainComponent } from './pages/main/main.component';
 import { SideBarComponent } from './components/side-bar/side-bar.component';
 import { ChatWindowComponent } from './pages/chat-window/chat-window.component';
+import { TypewriterComponent } from './components/typewriter/typewriter.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { ChatWindowComponent } from './pages/chat-window/chat-window.component';
     LogInComponent,
     MainComponent,
     SideBarComponent,
-    ChatWindowComponent
+    ChatWindowComponent,
+    TypewriterComponent
   ],
   imports: [
     BrowserModule,
