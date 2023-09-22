@@ -12,42 +12,77 @@ export class ChatWindowComponent implements OnInit {
   @Input() isOpen = false;
 
   messages: Message[] | undefined;
+  messageIndex = 0;
 
   ngOnInit() {
     this.messages = [
       {
-        id: 1,
+        id: 0,
         content: 'Hei! Mina olen SEMU, Sinu virtuaalne matemaatikaõpetaja. Kui Sul on mõni matemaatiline küsimus või probleem, siis olen siin, et Sind aidata. Koos saame kõigega hakkama! 😊',
         timestamp: new Date(),
-        isUser: false
+        isUser: false,
+        hasStartedTyping: false,
+      },
+      /*
+      {
+        id: 1,
+        content: 'Tere! Mul on üks küsimus. Nimelt kuidas saaksin ma hshsd ak wdkl aufihad km gerhjiejg n awjkdb kaf nerjgh ksenmf kmbnseuif  knmskl nwjhd ad kaw ndawbnjk palun? Seleta nagu ma oleks viie aastane?',
+        timestamp: new Date(),
+        isUser: true,
+        hasStartedTyping: false,
       },
       {
         id: 2,
-        content: 'Tere! Mul on üks küsimus. Nimelt kuidas saaksin ma hshsd ak wdkl aufihad km gerhjiejg n awjkdb kaf nerjgh ksenmf kmbnseuif  knmskl nwjhd ad kaw ndawbnjk palun? Seleta nagu ma oleks viie aastane?',
+        content: 'Muidugi! Proovin seletada nii lihtsalt kui võimalik. Kui sa mõtled sellele, siis...',
         timestamp: new Date(),
-        isUser: true
+        isUser: false,
+        hasStartedTyping: false,
       },
       {
         id: 3,
-        content: 'Muidugi! Proovin seletada nii lihtsalt kui võimalik. Kui sa mõtled sellele, siis...',
+        content: 'Aitäh selgitamast! Aga kuidas on lood selle teise asjaga?',
         timestamp: new Date(),
-        isUser: false
+        isUser: true,
+        hasStartedTyping: false,
       },
       {
         id: 4,
-        content: 'Aitäh selgitamast! Aga kuidas on lood selle teise asjaga?',
-        timestamp: new Date(),
-        isUser: true
-      },
-      {
-        id: 5,
         content: 'Hea küsimus! Selle teise asjaga on nii, et...',
         timestamp: new Date(),
-        isUser: false
+        isUser: false,
+        hasStartedTyping: false,
       },
+      */
     ];
 
   }
+
+  onTypingFinished(): void {
+    if (this.messageIndex < this.messages!.length - 1) {
+      this.messageIndex++;
+    }
+  }
+
+  onSendMessage(message: string, elementRef: HTMLTextAreaElement): void {
+    this.messages!.push({
+      id: this.messages!.length,
+      content: message,
+      timestamp: new Date(),
+      isUser: true,
+      hasStartedTyping: false,
+    });
+    this.messageIndex++;
+    elementRef.value = '';
+  }
+
+  adjustTextareaHeight(event: any): void {
+    const textarea = event.target;
+    textarea.style.height = 'auto'; // Reset height to auto before calculating the scroll height
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
+
+
+
 
 
 }
