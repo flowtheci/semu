@@ -54,7 +54,7 @@ export class TypewriterComponent implements OnInit, OnChanges {
     if (this.index < this.text.length) {
       this.textContainerElement.nativeElement.textContent = this.text.slice(0, this.index);
       this.index++;
-      setTimeout(() => this.type(), Math.random() * 80 + 20);
+      setTimeout(() => this.type(), Math.random() * 40 + 20);
     } else {
       this.textContainerElement.nativeElement.textContent = this.text.slice(0, this.index);
       this.typingFinished.emit(true); // Emit the typingFinished event when typing is finished
