@@ -20,7 +20,7 @@ export class TypewriterComponent implements OnInit, OnChanges {
   @Input() message: Message | undefined;
   @Input() startTyping: boolean = false;
   @Output() typingFinished = new EventEmitter<boolean>();
-  @ViewChild('textContainer', { static: true }) textContainerElement!: ElementRef;
+  @ViewChild('textContainer') textContainerElement!: ElementRef;
   @ViewChild('blinkingCursor', { static: true }) blinkingCursorElement!: ElementRef;
   index = 0;
   text = '';

@@ -26,10 +26,11 @@ export class SemuService {
     return this.http.post(this.textToSpeechUrl, data, { headers, responseType: 'blob' });
   }
 
-  async responseAsMessage(prompt: string, messageIndex: number): Promise<Message> {
-    const response = await this.aiResponse(prompt);
+  async responseAsMessage(messages: Message[]): Promise<Message> {
+    // Get the last message from the user
+    const response = await this.aiResponse(messages);
     return {
-      id: messageIndex,
+      id: messages.length,
       content: response,
       timestamp: new Date(),
       isUser: false,
@@ -37,12 +38,22 @@ export class SemuService {
     };
   }
 
-  async aiResponse(prompt: string): Promise<string> {
+  async aiResponse(prompt: Message[]): Promise<string> {
     // Call the OpenAI API and return the response
     const headers = {
-      Authorization: 'Bearer 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', // Replace with the actual API key securely
+      Authorization: 'Bearer ', // Replace with the actual API key securely
       'Content-Type': 'application/json',
     };
+
+    let finalMessages = [];
+
+    for (let i = 0; i < prompt.length; i++) {
+      finalMessages.push({
+        role: prompt[i].isUser ? 'user' : 'assistant',
+        content: prompt[i].content,
+      });
+    }
+
     const data = {
       model: 'gpt-3.5-turbo',
       messages: [
@@ -50,10 +61,7 @@ export class SemuService {
           role: 'system',
           content: mathPrompt,
         },
-        {
-          role: 'user',
-          content: prompt,
-        },
+        ...finalMessages,
       ],
     };
 

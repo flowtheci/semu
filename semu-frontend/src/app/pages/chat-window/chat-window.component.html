@@ -1,6 +1,6 @@
 <div class="chat-container" [class.open]="isOpen">
   <h1 class="chat-title">Matemaatika</h1>
-  <div class="chat-messages">
+  <div #messageBox class="chat-messages">
     <div class="chat-message-container" [class.assistant]="!message.isUser" *ngFor="let message of messages">
       <div *ngIf="message.isUser" class="user-icon">
         <svg width="75" height="75" viewBox="0 0 75 75" fill="none" xmlns="http://www.w3.org/2000/svg">
