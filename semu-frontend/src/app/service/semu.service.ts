@@ -41,7 +41,7 @@ export class SemuService {
   async aiResponse(prompt: Message[]): Promise<string> {
     // Call the OpenAI API and return the response
     const headers = {
-      Authorization: 'Bearer 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', // Replace with the actual API key securely
+      Authorization: 'Bearer ', // Replace with the actual API key securely
       'Content-Type': 'application/json',
     };
 
