@@ -37,11 +37,21 @@
     justify-content: flex-start;
     align-items: flex-start;
     z-index: 1;
+    overflow-y: scroll;
+    height: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+
+
+
+    &::-webkit-scrollbar {
+      width: 0;
+    }
 
 
     .chat-message-container {
       flex-grow: 1;
-      height: 150px;
+      min-height: 150px;
+      height: auto;
       display: flex;
       width: 100%;
       flex-direction: row;

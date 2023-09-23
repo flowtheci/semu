@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {Message} from 'src/app/model/message';
 import {SemuService} from "../../service/semu.service";
 
@@ -10,6 +10,7 @@ import {SemuService} from "../../service/semu.service";
 })
 export class ChatWindowComponent implements OnInit {
 
+  @ViewChild('messageBox', {static: true}) chatWindowElement!: HTMLElement;
   @Input() isOpen = false;
 
   messages: Message[] = [];
@@ -81,10 +82,13 @@ export class ChatWindowComponent implements OnInit {
     this.messageIndex++;
     elementRef.value = '';
 
-    const response: Message = await this.semuService.responseAsMessage(message, this.messages.length);
+    const response: Message = await this.semuService.responseAsMessage(this.messages);
     console.warn(response)
     this.messages.push(response);
     this.messageIndex++;
+    const event = {target: elementRef};
+    this.adjustTextareaHeight(event)
+    this.chatWindowElement.scrollTop = this.chatWindowElement.scrollHeight;
   }
 
   adjustTextareaHeight(event: any): void {
