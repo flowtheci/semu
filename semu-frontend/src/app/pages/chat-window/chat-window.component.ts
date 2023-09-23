@@ -10,7 +10,7 @@ import {SemuService} from "../../service/semu.service";
 })
 export class ChatWindowComponent implements OnInit {
 
-  @ViewChild('messageBox', {static: true}) chatWindowElement!: HTMLElement;
+  @ViewChild('messageBox') chatWindowElement!: HTMLElement;
   @Input() isOpen = false;
 
   messages: Message[] = [];
@@ -82,12 +82,13 @@ export class ChatWindowComponent implements OnInit {
     this.messageIndex++;
     elementRef.value = '';
 
+    const event = {target: elementRef};
+    this.adjustTextareaHeight(event)
+
     const response: Message = await this.semuService.responseAsMessage(this.messages);
     console.warn(response)
     this.messages.push(response);
     this.messageIndex++;
-    const event = {target: elementRef};
-    this.adjustTextareaHeight(event)
     this.chatWindowElement.scrollTop = this.chatWindowElement.scrollHeight;
   }
 
