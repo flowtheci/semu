@@ -6,7 +6,7 @@
   width: 400px;
   height: 100vh;
   flex-shrink: 0;
-  background: #062C43;
+  background: #031734;
   box-shadow: 0 4px 10px 10px rgba(1, 1, 1, 0.25);
   transition: left 0.3s ease-in-out; /* Add transition for smooth animation */
 
@@ -19,7 +19,6 @@
   position: absolute;
   left: 400px; /* Adjusted the initial position */
   cursor: pointer;
-  background: #062C43;
   padding: 10px 10px;
   border-bottom-right-radius: 8px;
   transition: left 0.3s ease-in-out, background-color 0.3s ease-in-out; /* Add transition for smooth animation */

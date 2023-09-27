@@ -5,8 +5,9 @@
   align-items: center;
   width: 55vw;
   height: 100vh;
-  background-color: #062C43;
+  background-color: #031734;
   transition: margin-left 0.3s ease-in-out;
+  box-shadow: 0px 4px 40px 20px rgba(0, 0, 0, 0.25);
 
   &.open {
     margin-left: 300px;
@@ -49,9 +50,9 @@
 
 
     .chat-message-container {
-      flex-grow: 1;
+      flex-shrink: 0;
       min-height: 150px;
-      height: auto;
+      -ms-overflow-style: none;  /* IE and Edge */
       display: flex;
       width: 100%;
       flex-direction: row;
@@ -59,11 +60,20 @@
       align-items: center;
       gap: 30px;
       padding: 15px 0;
+      background-color: #054569;
+
+      app-typewriter {
+        padding: 15px 5px;
+      }
+
+      &::-webkit-scrollbar {
+        width: 0;
+      }
+
 
       &.assistant {
-        background-color: #054569;
+        background-color: #031734;
         justify-content: flex-end;
-        height: auto;
 
         .chat-message {
           text-align: right;
@@ -135,4 +145,62 @@
     padding-left: 2px;
   }
 }
+
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+  transform: rotate(180deg);
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 33px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
 

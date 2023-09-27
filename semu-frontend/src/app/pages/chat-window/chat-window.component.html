@@ -13,11 +13,14 @@
         <img src="assets/semu-hea.png" alt="Logo">
       </div>
     </div>
+    <div class="chat-message-container assistant" *ngIf="isTyping">
+      <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+      <div class="assistant-icon">
+        <img src="assets/semu-hea.png" alt="Logo">
+      </div>
   </div>
   <div class="input-container">
     <textarea class="textbox" (input)="adjustTextareaHeight($event)" #input (keyup.enter)="onSendMessage(input.value, input)" placeholder="Kirjuta siia oma küsimus..."></textarea>
-    <div (click)="onSendMessage(input.value, input)" class="send-button">
-
-    </div>
+    <div (click)="onSendMessage(input.value, input)" class="send-button"></div>
   </div>
 </div>
