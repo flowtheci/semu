@@ -63,7 +63,7 @@ export class SemuService {
       messages: [
         {
           role: 'system',
-          content: this.promptUtil.getMathPrompt(localStorage.getItem('userClass') || 'none')
+          content: this.promptUtil.getMathPrompt(localStorage.getItem('userClass') || 'none', localStorage.getItem('firstName') || 'none'),
         },
         ...finalMessages,
       ],
