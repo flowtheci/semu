@@ -9,6 +9,7 @@ import { SideBarComponent } from './components/side-bar/side-bar.component';
 import { ChatWindowComponent } from './pages/chat-window/chat-window.component';
 import { TypewriterComponent } from './components/typewriter/typewriter.component';
 import {HttpClientModule} from "@angular/common/http";
+import { UserSetupComponent } from './components/user-setup/user-setup.component';
 
 @NgModule({
   declarations: [
@@ -17,12 +18,13 @@ import {HttpClientModule} from "@angular/common/http";
     MainComponent,
     SideBarComponent,
     ChatWindowComponent,
-    TypewriterComponent
+    TypewriterComponent,
+    UserSetupComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -15,6 +15,7 @@ export class ChatWindowComponent implements OnInit {
 
   messages: Message[] = [];
   messageIndex = 0;
+  isTyping = false;
 
   constructor(private semuService: SemuService) {
 
@@ -68,6 +69,10 @@ export class ChatWindowComponent implements OnInit {
   onTypingFinished(): void {
     if (this.messageIndex < this.messages.length - 1) {
       this.messageIndex++;
+    } else {
+      if (this.messages.length % 2 === 0) {
+        this.isTyping = true;
+      }
     }
   }
 
@@ -87,6 +92,7 @@ export class ChatWindowComponent implements OnInit {
 
     const response: Message = await this.semuService.responseAsMessage(this.messages);
     console.warn(response)
+    this.isTyping = false;
     this.messages.push(response);
     this.messageIndex++;
     this.chatWindowElement.scrollTop = this.chatWindowElement.scrollHeight;
