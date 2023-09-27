@@ -11,7 +11,6 @@
 
   &.open {
     margin-left: 300px;
-
   }
 
   .chat-title {
@@ -60,7 +59,7 @@
       align-items: center;
       gap: 30px;
       padding: 15px 0;
-      background-color: #054569;
+      background-color: #031734;
 
       app-typewriter {
         padding: 15px 5px;
@@ -72,7 +71,7 @@
 
 
       &.assistant {
-        background-color: #031734;
+        background-color: #054569;
         justify-content: flex-end;
 
         .chat-message {
@@ -162,6 +161,71 @@
   background: #fff;
   animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
+
+@media (max-width: 767px) {
+  .assistant-icon {
+    img {
+      width: 36px;
+      height: auto;
+      padding-right: 0;
+    }
+  }
+
+  .user-icon {
+    svg {
+      width: 36px;
+      height: auto;
+      padding-left: 0;
+    }
+  }
+
+  .chat-container {
+    width: 100vw;
+    height: calc(100vh - 56px);
+    max-height: calc(100vh - 56px);
+    border-radius: 20px 20px 0 0;
+    box-shadow: none;
+
+    &.open {
+      margin-left: 200vw;
+    }
+
+    .input-container {
+      width: 95%;
+
+      .textbox {
+        padding-left: 4px;
+      }
+    }
+
+
+
+    .chat-messages {
+      .chat-message-container {
+        min-height: 50px;
+      }
+    }
+
+
+
+    .chat-title {
+      background-color: #031734;
+      color: #FFF;
+      font-family: Outfit, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      border-radius: 20px 20px 0 0;
+      box-shadow: none;
+    }
+  }
+
+  .chat-message {
+    font-size: 14px;
+  }
+}
+
 .lds-ellipsis div:nth-child(1) {
   left: 8px;
   animation: lds-ellipsis1 0.6s infinite;

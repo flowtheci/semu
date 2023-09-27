@@ -13,6 +13,10 @@ export class MainComponent {
     this._sidebarOpen = $event;
   }
 
+  get isMobile(): boolean {
+    return window.innerWidth <= 768;
+  }
+
 
 
 }
