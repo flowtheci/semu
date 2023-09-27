@@ -21,7 +21,11 @@
     </div>
   </div>
   <div class="input-container">
-    <textarea class="textbox" (input)="adjustTextareaHeight($event)" #input (keyup.enter)="onSendMessage(input.value, input)" placeholder="Kirjuta siia oma küsimus..."></textarea>
+    <textarea class="textbox" (input)="adjustTextareaHeight($event)" #input (keyup.enter)="onSendMessage(input.value, input)" placeholder="Kirjuta siia oma küsimus...">
+    </textarea>
+    <svg (click)="onSendMessage(input.value, input)" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M28.6 14.8134L4.59999 2.81336C4.11739 2.56436 3.53199 2.63292 3.11999 2.9867C2.70969 3.34304 2.55671 3.91275 2.73332 4.4267L6.66666 16L2.79999 27.5734C2.66553 27.9699 2.72518 28.4066 2.96108 28.7526C3.19698 29.0986 3.58171 29.3137 3.99999 29.3334C4.20871 29.3321 4.41423 29.2819 4.59999 29.1867L28.6 17.1867C29.0453 16.9586 29.3254 16.5004 29.3254 16C29.3254 15.4997 29.0453 15.0415 28.6 14.8134ZM6.27999 25.3334L8.94666 17.3334H22.28L6.27999 25.3334ZM6.27999 6.6667L8.94666 14.6667H22.3467L6.27999 6.6667Z" fill="#FFFFFF"/>
+    </svg>
     <div (click)="onSendMessage(input.value, input)" class="send-button"></div>
   </div>
 </div>
