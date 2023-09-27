@@ -1,0 +1,23 @@
+.left-shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 15px;
+  z-index: 1;
+  transition: box-shadow 0.5s ease-in-out;
+  box-shadow: 10px 0 140px 150px rgba(0, 0, 0, 0.25);
+
+  &.none {
+    box-shadow: none;
+  }
+}
+
+.right-shadow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 15px;
+  z-index: 1;
+  transform: rotate(180deg);
+  box-shadow: 10px 0 140px 150px rgba(0, 0, 0, 0.25);
+}

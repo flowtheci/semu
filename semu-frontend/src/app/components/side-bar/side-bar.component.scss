@@ -30,6 +30,16 @@
   }
 }
 
+.menu-bottom {
+  display: flex;
+  position: absolute;
+  bottom: 15px;
+  width: 90%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
 
 .menu-inner {
   margin-left: 42px;
