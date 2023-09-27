@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {mathPrompt} from "../prompts";
+import { PromptUtil} from "../prompts";
 import {Message} from "../model/message";
 
 @Injectable({
@@ -11,7 +11,11 @@ export class SemuService {
   private readonly textToSpeechUrl = 'https://api.tartunlp.ai/text-to-speech/v2';
   private readonly openaiUrl = 'https://api.openai.com/v1/chat/completions'; // Replace with the actual OpenAI API endpoint
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private promptUtil: PromptUtil) { }
+
+  get apiKey(): string {
+    return localStorage.getItem('apiKey') || '';
+  }
 
   textToSpeech(inputText: string): Observable<Blob> {
     const headers = {
@@ -41,7 +45,7 @@ export class SemuService {
   async aiResponse(prompt: Message[]): Promise<string> {
     // Call the OpenAI API and return the response
     const headers = {
-      Authorization: 'Bearer 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', // Replace with the actual API key securely
+      Authorization: 'Bearer ' + this.apiKey,
       'Content-Type': 'application/json',
     };
 
@@ -59,7 +63,7 @@ export class SemuService {
       messages: [
         {
           role: 'system',
-          content: mathPrompt,
+          content: this.promptUtil.getMathPrompt(localStorage.getItem('userClass') || 'none')
         },
         ...finalMessages,
       ],

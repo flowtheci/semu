@@ -1,0 +1,22 @@
+.logo-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-right: 48px;
+
+  .logo {
+    width: 150px;
+    height: 168px;
+    padding: 40px 10px;
+  }
+
+  .logo-text {
+    color: #FFF;
+    font-family: Outfit, sans-serif;
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+  }
+}

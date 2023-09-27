@@ -10,6 +10,8 @@ import { ChatWindowComponent } from './pages/chat-window/chat-window.component';
 import { TypewriterComponent } from './components/typewriter/typewriter.component';
 import {HttpClientModule} from "@angular/common/http";
 import { UserSetupComponent } from './components/user-setup/user-setup.component';
+import { LogoComponent } from './components/logo/logo.component';
+import {PromptUtil} from "./prompts";
 
 @NgModule({
   declarations: [
@@ -19,14 +21,15 @@ import { UserSetupComponent } from './components/user-setup/user-setup.component
     SideBarComponent,
     ChatWindowComponent,
     TypewriterComponent,
-    UserSetupComponent
+    UserSetupComponent,
+    LogoComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [PromptUtil],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

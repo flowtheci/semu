@@ -22,12 +22,16 @@ export class ChatWindowComponent implements OnInit {
 
   }
 
+  get userName() {
+    return localStorage.getItem('firstName') || '';
+  }
+
 
   ngOnInit() {
     this.messages = [
       {
         id: 0,
-        content: 'Hei! Mina olen SEMU, Sinu virtuaalne matemaatikaõpetaja. Kui Sul on mõni matemaatiline küsimus või probleem, siis olen siin, et Sind aidata. Koos saame kõigega hakkama! 😊',
+        content: 'Hei ' + this.userName + '! Mina olen SEMU, Sinu virtuaalne matemaatikaõpetaja. Kui Sul on mõni matemaatiline küsimus või probleem, siis olen siin, et Sind aidata. Koos saame kõigega hakkama! 😊',
         timestamp: new Date(),
         isUser: false,
         hasStartedTyping: false,
