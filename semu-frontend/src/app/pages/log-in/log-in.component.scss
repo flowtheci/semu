@@ -227,6 +227,59 @@ $rate: 0.08056; // This is approximately -75/931
   z-index: -1;
 }
 
+@media (max-width: 767px) {
+  .content-container {
+    width: 100vw;
+    background: rgba(3, 23, 52, 0.6);
+
+    .logo {
+      margin-bottom: 0;
+    }
+
+    .log-in-text {
+      font-size: 24px;
+      margin-bottom: 0;
+      margin-top: 15px;
+    }
+
+    .title-text {
+      font-size: 20px;
+      margin-bottom: 25px;
+      margin-top: 0;
+      max-width: 60%;
+      text-align: center;
+    }
+
+    .form-input {
+      width: 80vw;
+    }
+
+    .or-text {
+      margin: 0 0 10px;
+    }
+
+    .register-button {
+      color: #F2F2F2;
+    }
+
+    .bottom-nav-links {
+      display: none;
+    }
+
+    .background-illustration {
+      display: none;
+    }
+
+    .divider {
+      width: 80vw;
+    }
+
+  }
+  .shadows {
+    display: none;
+  }
+}
+
 
 
 
