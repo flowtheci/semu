@@ -1,1 +1,21 @@
-<p>user-setup works!</p>
+<div class="settings-container">
+  <app-logo></app-logo>
+  <h1 class="settings-text">Sätted</h1>
+  <input #firstName type="text" placeholder="Eesnimi" class="form-input">
+  <input #apiKey type="text" placeholder="API võti" class="form-input">
+  <select #userClass class="form-input" name="class">
+    <option value="1">1. klass</option>
+    <option value="2">2. klass</option>
+    <option value="3">3. klass</option>
+    <option value="4">4. klass</option>
+    <option value="5">5. klass</option>
+    <option value="6">6. klass</option>
+    <option value="7">7. klass</option>
+    <option value="8">8. klass</option>
+    <option value="9">9. klass</option>
+    <option value="10">10. klass</option>
+    <option value="11">11. klass</option>
+    <option value="12">12. klass</option>
+  </select>
+  <div (click)="save()" class="save-button">Salvesta</div>
+</div>

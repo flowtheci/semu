@@ -1,0 +1,59 @@
+.settings-container {
+  background-color: #031734;
+  box-shadow: 0 4px 10px 10px rgba(0, 0, 0, 0.50);
+  width: 500px;
+  border-radius: 12px;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+
+  .save-button {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 8px 16px;
+    border: 0 solid #FFFFFF;
+    transition: focus 0.3s ease-in-out;
+    margin-bottom: 15px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+    color: #515151;
+  }
+
+  .settings-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    color: #FFFFFF;
+    margin-top: -30px;
+    margin-bottom: 15px;
+  }
+
+  .form-input {
+    font-family: 'Montserrat', sans-serif;
+    width: 80%;
+    font-weight: 900;
+    font-size: 20px;
+    background-color: #EFEFEF;
+    border-radius: 12px;
+    padding: 8px 16px;
+    border: 0 solid #FFFFFF;
+    transition: focus 0.3s ease-in-out;
+    margin-bottom: 15px;
+  }
+
+  .form-input::placeholder {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+    color: #515151;
+  }
+
+  .form-input:focus {
+    outline: none;
+    box-shadow: 0 4px 7px 0 rgba(0,0,0,0.75);
+  }
+}
