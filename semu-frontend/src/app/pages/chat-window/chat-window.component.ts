@@ -76,6 +76,7 @@ export class ChatWindowComponent implements OnInit {
     } else {
       if (this.messages.length % 2 === 0) {
         this.isTyping = true;
+        this.chatWindowElement.scroll(0, this.chatWindowElement.offsetHeight);
       }
     }
   }
@@ -99,7 +100,7 @@ export class ChatWindowComponent implements OnInit {
     this.isTyping = false;
     this.messages.push(response);
     this.messageIndex++;
-    this.chatWindowElement.scrollTop = this.chatWindowElement.scrollHeight;
+    this.chatWindowElement.scroll(0, this.chatWindowElement.scrollHeight);
   }
 
   adjustTextareaHeight(event: any): void {
