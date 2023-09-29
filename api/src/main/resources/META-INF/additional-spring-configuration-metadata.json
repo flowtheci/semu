@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "chatgpt.api.key",
+      "type": "java.lang.String",
+      "description": "ChatGPT API key."
+    },
+  ] }
