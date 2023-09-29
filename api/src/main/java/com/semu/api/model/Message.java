@@ -16,8 +16,7 @@ public class Message {
     @JoinColumn(name = "conversation_id")
     private Conversation conversation;
 
-    public Message(Long id, String content, LocalDateTime timestamp, boolean isUser, Conversation conversation) {
-        this.id = id;
+    public Message(String content, LocalDateTime timestamp, boolean isUser, Conversation conversation) {
         this.content = content;
         this.timestamp = timestamp;
         this.isUser = isUser;
@@ -74,7 +73,7 @@ public class Message {
                 ", content='" + content + '\'' +
                 ", timestamp=" + timestamp +
                 ", isUser=" + isUser +
-                ", conversation=" + conversation +
+                ", conversationId=" + conversation.getId() +
                 '}';
     }
 

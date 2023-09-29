@@ -1,16 +1,13 @@
 package com.semu.api.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
     private String firstName;
     private String lastName;
     private String email;
@@ -20,8 +17,7 @@ public class User {
         return firstName + " " + lastName;
     }
 
-    public User(String username, String firstName, String lastName, String email, String passwordHash) {
-        this.username = username;
+    public User(String firstName, String lastName, String email, String passwordHash) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -35,10 +31,6 @@ public class User {
         return id;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -49,10 +41,6 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public void setEmail(String email) {

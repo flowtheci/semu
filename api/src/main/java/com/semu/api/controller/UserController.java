@@ -1,9 +1,16 @@
 package com.semu.api.controller;
 
+import com.semu.api.model.User;
 import com.semu.api.service.UserService;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/users")
@@ -11,4 +18,40 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestBody User user) {
+        User registeredUser = userService.registerUser(user);
+        String token = Jwts.builder()
+                .setSubject(registeredUser.getEmail())
+                .setExpiration(new Date(System.currentTimeMillis() + 864000000)) // 1 day expiration
+                .signWith(SignatureAlgorithm.HS512, Base64.encodeBase64String(jwtSecret.getBytes()))
+                .compact();
+        return ResponseEntity.ok(token);
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<String> authenticateUser(@RequestParam String email, @RequestParam String password) {
+        User user = userService.authenticateUser(email, password);
+        if (user != null) {
+            String token = Jwts.builder()
+                    .setSubject(email)
+                    .setExpiration(new Date(System.currentTimeMillis() + 864000000)) // 1 day expiration
+                    .signWith(SignatureAlgorithm.HS512, Base64.encodeBase64String(jwtSecret.getBytes()))
+                    .compact();
+            return ResponseEntity.ok(token);
+        } else {
+            return ResponseEntity.status(401).body("Invalid username or password");
+        }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+
 }

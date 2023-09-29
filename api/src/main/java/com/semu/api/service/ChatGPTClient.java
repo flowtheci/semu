@@ -5,6 +5,7 @@ import com.semu.api.model.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,7 +18,12 @@ public class ChatGPTClient {
     private String apiUrl;
 
 
-    public String getAiResponse(Conversation conversation) {
-        return "";
+    public Message getAiResponse(Conversation conversation) {
+        return new Message("This is an AI response", LocalDateTime.now(), false, conversation);
+    }
+
+    public String generateTitle(Conversation conversation) {
+        // TODO request chatgpt api to generate a title based on starting messages.
+        return "Title";
     }
 }
