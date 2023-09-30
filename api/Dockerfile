@@ -1,0 +1,16 @@
+# Use the official OpenJDK base image
+FROM openjdk:11-jre-slim
+
+# Metadata as described above
+LABEL maintainer="kevinerik.iin@gmail.com"
+LABEL version="1.0"
+LABEL description="Docker image for my Spring Boot API"
+
+# Set the current working directory inside the image
+WORKDIR /app
+
+# Copy the JAR file into the image
+COPY target/api-0.0.1-SNAPSHOT.jar /app/api-0.0.1-SNAPSHOT.jar
+
+# Set the command to run your application using the JAR
+ENTRYPOINT ["java", "-jar", "/app/api-0.0.1-SNAPSHOT.jar"]
