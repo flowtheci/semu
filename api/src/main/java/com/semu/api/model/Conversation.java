@@ -16,6 +16,7 @@ public class Conversation {
     private User user;
 
     private String title;
+    private String prompt;
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("timestamp ASC")
