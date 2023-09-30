@@ -8,6 +8,8 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Lob
     private String content;
     private LocalDateTime timestamp;
     private boolean isUser;
@@ -75,13 +77,6 @@ public class Message {
                 ", isUser=" + isUser +
                 ", conversationId=" + conversation.getId() +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Message message)) return false;
-        return id.equals(message.id);
     }
 
     @Override
