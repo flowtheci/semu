@@ -6,6 +6,8 @@ Semu on dünaamiline tarkvaralahendus, mis võimaldab heli kaudu suhelda ChatGPT
 ## Proovi Semu
 Semu veebikeskkonna värskeim versioon on alati saadav siit: https://semu.vercel.app/
 
+Kuna hetkel kasutajat registreerida ei saa, kasuta sisselogimiseks kasutajanime admin parooliga admin.
+
 Semu backend API jookseb URL-il: https://semu-api.fly.dev/api/
 
 ## Funktsioonid
