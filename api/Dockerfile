@@ -10,7 +10,7 @@ LABEL description="Docker image for my Spring Boot API"
 WORKDIR /app
 
 # Copy the JAR file into the image
-COPY /target/api-0.0.1-SNAPSHOT.jar /app/api-0.0.1-SNAPSHOT.jar
+COPY /target/api-0.0.3-SNAPSHOT.jar /app/api-0.0.3-SNAPSHOT.jar
 
 # Set the command to run your application using the JAR
-ENTRYPOINT ["java", "-jar", "/app/api-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app/api-0.0.3-SNAPSHOT.jar"]
