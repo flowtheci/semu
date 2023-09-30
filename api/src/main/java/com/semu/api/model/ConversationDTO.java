@@ -24,12 +24,20 @@ public class ConversationDTO {
             return conversationId;
         }
 
+        public String getTitle() {
+            return title;
+        }
+
         public List<MessageDTO> getMessages() {
             return messages;
         }
 
         public String getLastMessageTimestamp() {
             return lastMessageTimestamp;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
         }
 
         public void setConversationId(Long conversationId) {

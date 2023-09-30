@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "https://semu.vercel.app/")
 @RequestMapping("/api/conversations")
 public class ConversationController {
 
@@ -37,7 +38,11 @@ public class ConversationController {
         }
 
         Conversation conversation = conversationService.startConversationAndAnswer(userService.getUserByEmail(email), messages.get(0), messages.get(1));
-        return ResponseEntity.ok(conversationService.getLastReplyDTO(conversation));
+        ReplyDTO answer = conversationService.getLastReplyDTO(conversation);
+        if (conversation.getTitle() != null) {
+            answer.setTitle(conversation.getTitle());
+        }
+        return ResponseEntity.ok(answer);
     }
 
     @PostMapping("/addMessage")
@@ -61,4 +66,15 @@ public class ConversationController {
         Conversation conversation = conversationService.getConversationByIdAndUser(conversationId, email);
         return ResponseEntity.ok(conversationService.getConversationDTO(conversation));
     }
+
+    @GetMapping("/getAllUserConversations")
+    public ResponseEntity<List <Long>> getAllConversations(@RequestHeader(name = "Authorization") String authToken) {
+        String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
+        if (email == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        return ResponseEntity.ok(conversationService.getConversationIds(email));
+    }
+
 }

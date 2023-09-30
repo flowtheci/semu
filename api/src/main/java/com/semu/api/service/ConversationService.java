@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -60,6 +61,18 @@ public class ConversationService {
         User user = userService.getUserByEmail(email);
         return conversationRepository.findByIdAndUser(id, user);
     }
+
+    public List<Conversation> getConversationsByUser(String email) {
+        User user = userService.getUserByEmail(email);
+        return conversationRepository.findByUser(user);
+    }
+
+    public List<Long> getConversationIds(String email) {
+        List<Conversation> conversations = getConversationsByUser(email);
+        if (conversations == null) return new ArrayList<>();
+        return conversations.stream().map(Conversation::getId).toList();
+    }
+
 
     public List<Conversation> getAllConversations() {
         return conversationRepository.findAll();

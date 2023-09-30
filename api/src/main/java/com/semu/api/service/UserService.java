@@ -1,5 +1,6 @@
 package com.semu.api.service;
 
+import com.semu.api.model.AuthDTO;
 import com.semu.api.model.User;
 import com.semu.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,14 @@ public class UserService {
             return user;
         }
         return null;
+    }
+
+    public AuthDTO wrapJwtToken(String token) {
+        return new AuthDTO(String.valueOf(System.currentTimeMillis()), token);
+    }
+
+    public AuthDTO invalidToken() {
+        return new AuthDTO();
     }
 
     public List<User> getAllUsers() {

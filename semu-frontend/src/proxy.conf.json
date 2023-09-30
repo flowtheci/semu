@@ -1,0 +1,7 @@
+{
+  "/api": {
+    "target": "https://semu-api.fly.dev",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
