@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -13,6 +13,7 @@ import { UserSetupComponent } from './components/user-setup/user-setup.component
 import { LogoComponent } from './components/logo/logo.component';
 import {PromptUtil} from "./prompts";
 import {JwtModule} from "@auth0/angular-jwt";
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 export function tokenGetter() {
   return localStorage.getItem("authToken");
@@ -38,6 +39,12 @@ export function tokenGetter() {
         tokenGetter: tokenGetter,
         allowedDomains: ["semu-api.fly.dev"],
       },
+    }),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
     }),
   ],
   providers: [PromptUtil],
