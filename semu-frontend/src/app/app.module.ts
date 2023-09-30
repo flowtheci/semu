@@ -12,6 +12,11 @@ import {HttpClientModule} from "@angular/common/http";
 import { UserSetupComponent } from './components/user-setup/user-setup.component';
 import { LogoComponent } from './components/logo/logo.component';
 import {PromptUtil} from "./prompts";
+import {JwtModule} from "@auth0/angular-jwt";
+
+export function tokenGetter() {
+  return localStorage.getItem("authToken");
+}
 
 @NgModule({
   declarations: [
@@ -28,6 +33,12 @@ import {PromptUtil} from "./prompts";
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ["semu-api.fly.dev"],
+      },
+    }),
   ],
   providers: [PromptUtil],
   bootstrap: [AppComponent]

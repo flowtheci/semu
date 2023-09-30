@@ -1,5 +1,12 @@
 <div class="chat-container" [class.open]="isOpen">
-  <h1 class="chat-title">Matemaatika</h1>
+  <div class="chat-title">Matemaatika
+    <p class="subtitle-text" *ngIf="hasConversationId">
+      <span *ngIf="showLeftArrow" (click)="loadPreviousConversation()" class="clicker"><</span>
+      {{'\n'  + conversationTitle + ' (' + conversationId + ') '}}
+      <span *ngIf="showRightArrow" (click)="loadNextConversation()" class="clicker">></span>
+    </p>
+    <p (click)="createNewConversation()" class="new-chat">Uus vestlus</p>
+  </div>
   <div #messageBox id="messageBox" class="chat-messages">
     <div class="chat-message-container" [class.assistant]="!message.isUser" *ngFor="let message of messages">
       <div *ngIf="message.isUser" class="user-icon">
@@ -8,7 +15,8 @@
           <path d="M18.46 48V27.18H21.28V48H18.46ZM31.9 48V27.18H34.72V48H31.9ZM20.38 38.52V35.94H32.59V38.52H20.38ZM52.5116 48L42.0116 37.14L52.3016 27.18H55.9616L44.8616 37.86V36.3L56.2616 48H52.5116ZM39.6416 48V27.18H42.4616V48H39.6416Z" fill="black"/>
         </svg>
       </div>
-      <app-typewriter (typingFinished)="onTypingFinished()" [startTyping]="messageIndex === message.id && !message.hasStartedTyping" class="chat-message" [class.left]="!message.isUser" [message]="message"></app-typewriter>
+      <app-typewriter *ngIf="message.isTypeable" (typingFinished)="onTypingFinished()" [startTyping]="messageIndex === message.id && !message.hasStartedTyping" class="chat-message" [class.left]="!message.isUser" [message]="message"></app-typewriter>
+      <h1 [class.left]="!message.isUser" class="chat-message" *ngIf="!message.isTypeable">{{message.content}}</h1>
       <div *ngIf="!message.isUser" class="assistant-icon">
         <img src="assets/semu-hea.png" alt="Logo">
       </div>

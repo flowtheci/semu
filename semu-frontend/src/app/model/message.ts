@@ -4,4 +4,5 @@ export interface Message {
   timestamp: Date;
   isUser: boolean;
   hasStartedTyping: boolean;
+  isTypeable: boolean;
 }

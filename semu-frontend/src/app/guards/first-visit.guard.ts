@@ -1,26 +1,33 @@
 import { Injectable } from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
 import { Observable } from 'rxjs';
+import {AuthService} from "../service/auth.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirstVisitGuard implements CanActivate {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    const isFirstVisit = !localStorage.getItem('firstVisit');
+    if (!this.authService.loggedIn) {
+      return this.router.createUrlTree(['/log-in']);
+    }
 
-    if (isFirstVisit) {
-      return this.router.createUrlTree(['/setup']);
+    if (!this.authService.validateJwt()) {
+      this.authService.logOut();
+      localStorage.removeItem('authToken');
+      return this.router.createUrlTree(['/log-in']);
     }
 
     return true;
   }
+
+
 }
 
 

@@ -29,15 +29,15 @@
     <h3 class="or-text">või</h3>
     <div class="divider"></div>
     <div class="form-container">
-      <input type="text" name="email" placeholder="e-posti aadress" class="form-input">
-      <input type="password" name="password" placeholder="salasõna" class="form-input">
+      <input id="email" #email type="text" name="email" placeholder="e-posti aadress" class="form-input">
+      <input id="password" #password type="password" name="password" placeholder="salasõna" class="form-input">
     </div>
     <svg class="background-illustration" width="1056" height="348" viewBox="0 0 1056 348" fill="none" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="528" cy="363.5" rx="528" ry="363.5" fill="#D9D9D9"/>
     </svg>
     <h1 class="forgot-password-text">Unustasid parooli?</h1>
     <div class="bottom-menu-container">
-      <div [routerLink]="'/home'" class="enter-button">Sisene</div>
+      <div (click)="logIn()" class="enter-button">Sisene</div>
       <h1 class="register-button">Registreeru</h1>
       <div class="bottom-nav-links">
         <a href="#">Kasutajatingimused</a>
