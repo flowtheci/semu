@@ -1,5 +1,5 @@
 # Use the official OpenJDK base image
-FROM openjdk:11-jre-slim
+FROM openjdk:17-oracle
 
 # Metadata as described above
 LABEL maintainer="kevinerik.iin@gmail.com"
