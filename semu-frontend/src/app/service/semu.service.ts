@@ -3,78 +3,141 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import { PromptUtil} from "../prompts";
 import {Message} from "../model/message";
+import {backendUrl} from "../app.component";
+import {AuthService} from "./auth.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SemuService {
-  private readonly textToSpeechUrl = 'https://api.tartunlp.ai/text-to-speech/v2';
-  private readonly openaiUrl = 'https://api.openai.com/v1/chat/completions'; // Replace with the actual OpenAI API endpoint
 
-  constructor(private http: HttpClient, private promptUtil: PromptUtil) { }
+  _lastConversationId: string = ''
+  _lastTitle: string = ''
+  _loading: boolean = false;
+
+
+  constructor(private http: HttpClient, private promptUtil: PromptUtil, private authService: AuthService) { }
 
   get apiKey(): string {
     return localStorage.getItem('apiKey') || '';
   }
 
-  textToSpeech(inputText: string): Observable<Blob> {
-    const headers = {
-      'Accept': 'audio/wav',
-      'Content-Type': 'application/json',
-    };
-    const data = {
-      text: inputText,
-      speaker: 'tambet',
-      speed: 1.3
-    };
-    return this.http.post(this.textToSpeechUrl, data, { headers, responseType: 'blob' });
+  shouldInstantlyType(): boolean {
+    return this._loading;
   }
 
+
   async responseAsMessage(messages: Message[]): Promise<Message> {
-    // Get the last message from the user
-    const response = await this.aiResponse(messages);
-    return {
-      id: messages.length,
-      content: response,
-      timestamp: new Date(),
-      isUser: false,
-      hasStartedTyping: false,
-    };
+    try {// Get the last message from the user
+      return this.aiResponse(messages).then(
+        (response: string) => {
+          return {
+            id: messages[messages.length - 1].id + 1,
+            content: response,
+            timestamp: new Date(),
+            isUser: false,
+            hasStartedTyping: false,
+            isTypeable: true,
+          };
+        }
+      );
+    } catch (e) {
+      console.error('Error calling backend API:', e);
+      throw e;
+    }
+  }
+
+  getLastConversationId(): string {
+    return this._lastConversationId;
+  }
+
+  setLastConversationId(id: string): void {
+    this._lastConversationId = id;
+  }
+
+  getLastTitle(): string {
+    return this._lastTitle;
+  }
+
+  setLastTitle(title: string): void {
+    this._lastTitle = title;
+  }
+
+  getAllConversations(): Promise<number[]> {
+    this._loading = true;
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      const response = this.http.get(backendUrl + 'conversations/getAllUserConversations', {headers});
+      return response.toPromise().then((response: any) => {
+        return response;
+      });
+
+    }
+    catch (e) {
+      console.error('Error calling backend API:', e);
+      throw e;
+    }
+  }
+
+  getConversationById(id: string): Promise<object> {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      const response = this.http.get(backendUrl + 'conversations/getConversation?conversationId=' + id, {headers});
+      return response.toPromise().then((response: any) => {
+        console.error(response);
+        setTimeout(
+          () => {
+            this._loading = false;
+          }
+        , 125
+        )
+        return response;
+      });
+
+    }
+    catch (e) {
+      console.error('Error calling backend API:', e);
+      throw e;
+    }
   }
 
   async aiResponse(prompt: Message[]): Promise<string> {
-    // Call the OpenAI API and return the response
+    // Call the backend and return response
     const headers = {
-      Authorization: 'Bearer ' + this.apiKey,
       'Content-Type': 'application/json',
     };
 
     let finalMessages = [];
-
     for (let i = 0; i < prompt.length; i++) {
-      finalMessages.push({
-        role: prompt[i].isUser ? 'user' : 'assistant',
-        content: prompt[i].content,
-      });
+      finalMessages.push(prompt[i].content);
     }
 
-    const data = {
-      model: 'gpt-3.5-turbo-16k-0613',
-      messages: [
-        {
-          role: 'system',
-          content: this.promptUtil.getMathPrompt(localStorage.getItem('userClass') || 'none', localStorage.getItem('firstName') || 'none'),
-        },
-        ...finalMessages,
-      ],
-    };
-
+    const isFirstMessage = prompt.length === 2;
     try {
-      const response = this.http.post(this.openaiUrl, data, {headers});
-      // @ts-ignore
-      return (await response.toPromise()).choices[0].message.content;
+
+      if (isFirstMessage) {
+        const response = this.http.post(backendUrl + 'conversations/startConversation', finalMessages, {headers});
+        return response.toPromise().then((response: any) => {
+          this._lastConversationId = response.id;
+          this._lastTitle = response.title;
+          return response.lastMessage;
+        });
+      } else {
+        const response = this.http.post(backendUrl + 'conversations/addMessage?conversationId=' + this.getLastConversationId(), finalMessages[finalMessages.length-1], {headers});
+        return response.toPromise().then((response: any) => {
+          this._lastConversationId = response.id;
+          this._lastTitle = response.title;
+          return response.lastMessage;
+        });
+      }
     } catch (error) {
-      console.error('Error calling OpenAI API:', error);
+      console.error('Error calling backend API:', error);
       throw error;
     }
   }

@@ -16,6 +16,11 @@ export class SideBarComponent {
   }
 
 
+  logout() {
+    localStorage.clear();
+    window.location.reload();
+  }
+
 
 
 }
