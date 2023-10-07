@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {SemuService} from "../../service/semu.service";
 
 @Component({
   selector: 'app-main',
@@ -6,6 +7,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent {
+
+  constructor(private semuService: SemuService) {
+  }
+
 
   _sidebarOpen = false;
 
@@ -15,6 +20,10 @@ export class MainComponent {
 
   get isMobile(): boolean {
     return window.innerWidth <= 768;
+  }
+
+  get selectedConversationId(): string {
+    return this.semuService.selectedConversation;
   }
 
 

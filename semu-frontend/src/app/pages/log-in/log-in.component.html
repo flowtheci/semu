@@ -2,8 +2,11 @@
   <div class="content-container">
     <img src="assets/logo.png" alt="logo" class="logo">
     <h1 class="title-text">ÕPIKAASLANE IGAKS HETKEKS</h1>
-    <h2 class="log-in-text">Logi sisse</h2>
-    <div class="action-button-container">
+    <div *ngIf="isLoading" class="loading-spinner">
+      <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
+    <h2 *ngIf="!isLoading" class="log-in-text">{{ isRegisterForm ? 'Registreeru' : 'Logi sisse'}}</h2>
+    <div *ngIf="!isRegisterForm && !isLoading" class="action-button-container">
       <div [routerLink]="'/home'" class="action-button facebook">
         <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#clip0_1_190)">
@@ -26,19 +29,25 @@
         </svg>
       </div>
     </div>
-    <h3 class="or-text">või</h3>
-    <div class="divider"></div>
-    <div class="form-container">
+    <h3 *ngIf="!isRegisterForm && !isLoading" class="or-text">või</h3>
+    <div *ngIf="!isLoading" class="divider"></div>
+    <div *ngIf="!isRegisterForm && !isLoading" class="form-container">
+      <input id="emailLogin" #emailLogin type="text" name="email" placeholder="e-posti aadress" class="form-input">
+      <input (keyup.enter)="logIn()" id="passwordLogin" #passwordLogin type="password" name="password" placeholder="salasõna" class="form-input">
+    </div>
+    <div *ngIf="isRegisterForm && !isLoading" class="form-container">
+      <input id="firstname" #firstname type="text" name="firstname" placeholder="eesnimi" class="form-input">
+      <input id="lastname" #lastname type="text" name="lastname" placeholder="perekonnanimi" class="form-input">
       <input id="email" #email type="text" name="email" placeholder="e-posti aadress" class="form-input">
-      <input id="password" #password type="password" name="password" placeholder="salasõna" class="form-input">
+      <input (keyup.enter)="register()" id="password" #password type="password" name="password" placeholder="salasõna" class="form-input extra-margin">
     </div>
     <svg class="background-illustration" width="1056" height="348" viewBox="0 0 1056 348" fill="none" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="528" cy="363.5" rx="528" ry="363.5" fill="#D9D9D9"/>
     </svg>
-    <h1 class="forgot-password-text">Unustasid parooli?</h1>
+    <h1 *ngIf="!isRegisterForm && !isLoading" class="forgot-password-text">Unustasid parooli?</h1>
     <div class="bottom-menu-container">
-      <div (click)="logIn()" class="enter-button">Sisene</div>
-      <h1 class="register-button">Registreeru</h1>
+      <div *ngIf="!isLoading" (click)="isRegisterForm ? register() : logIn()" class="enter-button">{{isRegisterForm ? 'Registreeri kasutaja' : 'Sisene'}}</div>
+      <h1 *ngIf="!isLoading" (click)="toggle()" class="register-button">{{isRegisterForm ? 'Tagasi' : 'Registreeru'}}</h1>
       <div class="bottom-nav-links">
         <a href="#">Kasutajatingimused</a>
         <a href="#">Avaleht</a>

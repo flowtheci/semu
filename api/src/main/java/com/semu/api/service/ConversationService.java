@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -54,6 +55,31 @@ public class ConversationService {
         List<MessageDTO> messageDTOs = conversation.getMessages().stream().map(message -> new MessageDTO(message.getId(), message.getContent(), message.getTimestamp().toString(), message.isUser())).toList();
         return new ConversationDTO(conversation.getId(), conversation.getTitle(), messageDTOs, LocalDateTime.now().toString());
     }
+
+    public HashMap<Long, String> getConversationTitlesForUser(List<Long> titleIds, String email) {
+        List<Conversation> conversations = getConversationsByUser(email);
+        HashMap<Long, String> conversationTitles = new HashMap<>();
+        for (Conversation conversation : conversations) {
+            if (titleIds.contains(conversation.getId())) {
+                conversationTitles.put(conversation.getId(), conversation.getTitle());
+            }
+        }
+        return conversationTitles;
+    }
+
+    public HashMap<Long, String> getLastConversationTitlesForUser(String email, Long amount) {
+        List<Conversation> conversations = getConversationsByUser(email);
+        HashMap<Long, String> conversationTitles = new HashMap<>();
+        for (Conversation conversation : conversations) {
+            if (conversationTitles.size() >= amount) {
+                break;
+            }
+            conversationTitles.put(conversation.getId(), conversation.getTitle());
+        }
+        return conversationTitles;
+    }
+
+
 
 
 

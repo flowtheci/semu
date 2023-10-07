@@ -15,11 +15,24 @@ export class SemuService {
   _lastTitle: string = ''
   _loading: boolean = false;
 
+  _selectedConversation = '';
+
+
 
   constructor(private http: HttpClient, private promptUtil: PromptUtil, private authService: AuthService) { }
 
   get apiKey(): string {
     return localStorage.getItem('apiKey') || '';
+  }
+
+  get selectedConversation(): string {
+    return this._selectedConversation;
+  }
+
+  set selectedConversation(id: string) {
+    this._selectedConversation = id;
+
+
   }
 
   shouldInstantlyType(): boolean {
@@ -71,6 +84,24 @@ export class SemuService {
       };
 
       const response = this.http.get(backendUrl + 'conversations/getAllUserConversations', {headers});
+      return response.toPromise().then((response: any) => {
+        return response;
+      });
+
+    }
+    catch (e) {
+      console.error('Error calling backend API:', e);
+      throw e;
+    }
+  }
+
+  getConversationTitles(amount: number): Promise<object> {
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+      };
+
+      const response = this.http.get(backendUrl + 'conversations/getLastConversationTitles?amount=' + amount, {headers});
       return response.toPromise().then((response: any) => {
         return response;
       });

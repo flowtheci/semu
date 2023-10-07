@@ -41,6 +41,18 @@
   padding: 0 20px;
 }
 
+.menu-title-text {
+  color: #FFF;
+  font-family: Outfit, sans-serif;
+  font-size: 44px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  margin: 10px 10px 20px 42px;
+  cursor: pointer;
+  user-select: none;
+}
+
 .menu-inner {
   margin-left: 42px;
   display: flex;
@@ -48,16 +60,6 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 26px;
-
-  .menu-title-text {
-    color: #FFF;
-    font-family: Outfit, sans-serif;
-    font-size: 44px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    margin: 0 0 20px;
-  }
 
   .menu-item-text {
     position: relative; /* Added for positioning the pseudo-element */
@@ -72,7 +74,7 @@
     cursor: pointer;
     overflow: unset; /* Hide the overflowing part of the underline */
 
-    &::before {
+    &.highlight::before {
       content: "";
       position: absolute;
       bottom: -5px;
@@ -84,7 +86,7 @@
       transition: width 0.3s ease, left 0.3s ease; /* Smooth transition for the animation */
     }
 
-    &:hover::before {
+    &.highlight:hover::before {
       width: 100%;
       left: 0;
     }
@@ -102,4 +104,33 @@
       }
     }
   }
+}
+
+.conversations {
+  .menu-item-text {
+    color: #FFF;
+    font-family: Outfit, sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 200;
+    line-height: normal;
+    margin-left: 8px;
+    user-select: none;
+
+    &.sub-text {
+      color: #FFF;
+      font-family: Outfit, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 100;
+      line-height: normal;
+      cursor: initial;
+      margin-left: 3px;
+      user-select: none;
+    }
+  }
+
+
+
+
 }

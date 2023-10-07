@@ -19,12 +19,11 @@ public class JwtService {
 
     public String validateTokenAndGetSubject(String token) {
         try {
-            // Parse the JWT token
             Jws<Claims> jws = Jwts.parser()
-                    .setSigningKey(jwtSecret.getBytes()) // Set the secret key for signature validation
-                    .parseClaimsJws(token); // Parse the token
+                    .setSigningKey(jwtSecret.getBytes()) // validate with secret key
+                    .parseClaimsJws(token); // parse jwt token
 
-            // Get the subject (usually the user identifier) from the token
+            // Get the subject email from the token
             String email = jws.getBody().getSubject();
             User user = userService.getUserByEmail(email);
 

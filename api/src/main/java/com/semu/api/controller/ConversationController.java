@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "https://semu.vercel.app/")
 @RequestMapping("/api/conversations")
 public class ConversationController {
 
@@ -76,5 +76,26 @@ public class ConversationController {
 
         return ResponseEntity.ok(conversationService.getConversationIds(email));
     }
+
+    @GetMapping("/getConversationTitles")
+    public ResponseEntity<HashMap<Long, String>> getConversationTitles(@RequestHeader(name = "Authorization") String authToken, @RequestBody List<Long> conversationIds) {
+        String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
+        if (email == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        return ResponseEntity.ok(conversationService.getConversationTitlesForUser(conversationIds, email));
+    }
+
+    @GetMapping("/getLastConversationTitles")
+    public ResponseEntity<HashMap<Long, String>> getConversationTitles(@RequestHeader(name = "Authorization") String authToken, @RequestParam Long amount) {
+        String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
+        if (email == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        return ResponseEntity.ok(conversationService.getLastConversationTitlesForUser(email, amount));
+    }
+
 
 }

@@ -19,10 +19,13 @@ import {Message} from "../../model/message";
 export class TypewriterComponent implements OnInit, OnChanges {
   @Input() message: Message | undefined;
   @Input() startTyping: boolean = false;
+  @Input() fast: boolean = false;
   @Output() typingFinished = new EventEmitter<boolean>();
   @ViewChild('textContainer') textContainerElement!: ElementRef;
   @ViewChild('blinkingCursor', { static: true }) blinkingCursorElement!: ElementRef;
   index = 0;
+  typeSpeed = 50;
+  fastTypeSpeed = 10;
   text = '';
 
   ngOnInit(): void {
@@ -54,11 +57,17 @@ export class TypewriterComponent implements OnInit, OnChanges {
     if (this.index < this.text.length) {
       this.textContainerElement.nativeElement.textContent = this.text.slice(0, this.index);
       this.index++;
-      setTimeout(() => this.type(), Math.random() * 40 + 20);
+      this.scrollOnType();
+      setTimeout(() => this.type(), Math.random() * (this.fast ? this.fastTypeSpeed : this.typeSpeed));
     } else {
       this.textContainerElement.nativeElement.textContent = this.text.slice(0, this.index);
+      this.scrollOnType();
       this.typingFinished.emit(true); // Emit the typingFinished event when typing is finished
     }
+  }
+
+  scrollOnType() {
+    this.textContainerElement.nativeElement.scrollIntoView(true);
   }
 
 
