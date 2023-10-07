@@ -19,9 +19,10 @@ export class SideBarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.semuService.getConversationTitles(10).then((response: any) => {
+    this.semuService.getConversationTitles(5).then((response: any) => {
       console.warn(response);
       this.conversationTitles = Object.entries(response).map(([key, value]) => ({key, value}));
+      this.conversationTitles.reverse();
     }
     );
   }
