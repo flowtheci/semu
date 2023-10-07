@@ -10,6 +10,8 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) { }
 
+  _isLoading = false;
+
   get jwtToken() {
     return localStorage.getItem('authToken');
   }
@@ -18,7 +20,12 @@ export class AuthService {
     return !!this.jwtToken;
   }
 
+  get loading() {
+    return this._isLoading;
+  }
+
   logIn(email: string, password: string) {
+    this.startLoading();
     const headers = {
       'Content-Type': 'application/json',
     }
@@ -27,8 +34,39 @@ export class AuthService {
       console.warn(response);
       localStorage.setItem('authToken', response.token);
       this.router.navigate(['/home']);
+      this._isLoading = false;
     });
   }
+
+  register(email: string, password: string, firstName: string, lastName: string) {
+    this.startLoading();
+    const headers = {
+      'Content-Type': 'application/json',
+    }
+
+    const body = {
+      email: email,
+      passwordHash: password,
+      firstName: firstName,
+      lastName: lastName
+    }
+
+    this.http.post(backendUrl + 'users/register', body, {headers: headers}).subscribe((response: any) => {
+      console.warn(response);
+      localStorage.setItem('authToken', response.token);
+      this.router.navigate(['/home']);
+      this._isLoading = false;
+    });
+  }
+
+  startLoading() {
+    this._isLoading = true;
+    setTimeout(() => {
+      this._isLoading = false;
+    }
+    , 30000);
+  }
+
 
   logOut() {
     localStorage.removeItem('authToken');

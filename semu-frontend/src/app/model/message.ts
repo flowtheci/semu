@@ -5,4 +5,5 @@ export interface Message {
   isUser: boolean;
   hasStartedTyping: boolean;
   isTypeable: boolean;
+  fast?: boolean;
 }

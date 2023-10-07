@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {Message} from 'src/app/model/message';
 import {SemuService} from "../../service/semu.service";
 
@@ -8,10 +8,11 @@ import {SemuService} from "../../service/semu.service";
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.scss']
 })
-export class ChatWindowComponent implements OnInit, AfterViewInit {
+export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
 
   @ViewChild('messageBox') chatWindowElement!: HTMLElement;
   @Input() isOpen = false;
+  @Input() conversationIdToLoad: string = '';
 
   messages: Message[] = [];
   messageIndex = 0;
@@ -51,7 +52,14 @@ export class ChatWindowComponent implements OnInit, AfterViewInit {
         isTypeable: true,
       },
     ];
+  }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['conversationIdToLoad']) {
+      console.warn("NEW!!!!")
+      this.conversationId = this.conversationIdToLoad;
+      this.loadConversation();
+    }
   }
 
   async ngAfterViewInit(): Promise<void> {
@@ -75,7 +83,8 @@ export class ChatWindowComponent implements OnInit, AfterViewInit {
           timestamp: new Date(message.timestamp),
           isUser: message.user,
           hasStartedTyping: false,
-          isTypeable: false,
+          isTypeable: response.messages.indexOf(message) === response.messages.length - 1,
+          fast: response.messages.indexOf(message) === response.messages.length - 1,
         };
       });
       console.warn(this.messages);
@@ -98,7 +107,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit {
     const newId = this.messages.length;
     this.messages.push({
       id: newId,
-      content: message,
+      content: this.fixMessage(message),
       timestamp: new Date(),
       isUser: true,
       hasStartedTyping: false,
@@ -125,29 +134,16 @@ export class ChatWindowComponent implements OnInit, AfterViewInit {
     });
   }
 
+  fixMessage(message: string) {
+    return message.replace(/\s+/g, ' ').trim();
+  }
+
   adjustTextareaHeight(event: any): void {
     const textarea = event.target;
     textarea.style.height = 'auto'; // Reset height to auto before calculating the scroll height
     textarea.style.height = textarea.scrollHeight + 'px';
   }
 
-  loadPreviousConversation(): void {
-    this.conversationId = this.conversationArray[this.conversationArray.indexOf(parseInt(this.conversationId))-1].toString();
-    if (this.convoExists()) {
-      this.loadConversation();
-    } else {
-      this.createNewConversation();
-    }
-  }
-
-  loadNextConversation(): void {
-    this.conversationId = this.conversationArray[this.conversationArray.indexOf(parseInt(this.conversationId))+1].toString();
-    if (this.convoExists()) {
-      this.loadConversation();
-    } else {
-      this.createNewConversation();
-    }
-  }
 
   convoExists(): boolean {
     return this.conversationArray.includes(parseInt(this.conversationId));

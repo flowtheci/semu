@@ -17,7 +17,6 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 
 @RestController
-@CrossOrigin(origins = "https://semu.vercel.app/")
 @RequestMapping("/api/users")
 public class UserController {
 

@@ -37,7 +37,7 @@ export function tokenGetter() {
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        allowedDomains: ["semu-api.fly.dev"],
+        allowedDomains: ["semu-api.fly.dev", "localhost:8080"],
       },
     }),
     ServiceWorkerModule.register('ngsw-worker.js', {
