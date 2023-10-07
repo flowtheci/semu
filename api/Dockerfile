@@ -10,11 +10,11 @@ LABEL description="Docker image for my Spring Boot API"
 WORKDIR /app
 
 # Copy the JAR file into the image
-COPY /target/api-0.0.3-SNAPSHOT.jar /app/api-0.0.3-SNAPSHOT.jar
+COPY /target/api-0.0.4-SNAPSHOT.jar /app/api-0.0.4-SNAPSHOT.jar
 
 COPY /config/gc.json /app/credentials.json
 
 ENV GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
 
 # Set the command to run your application using the JAR
-ENTRYPOINT ["java", "-jar", "/app/api-0.0.3-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app/api-0.0.4-SNAPSHOT.jar"]
