@@ -21,7 +21,7 @@
     <h1 (click)="select(2)" class="menu-title-text">VESTLUSED</h1>
     <div *ngIf="selectedSubMenu == 2" class="menu-inner conversations">
       <p class="menu-item-text sub-text">Viimased 5 vestlust</p>
-      <p (click)="selectConversation(title.key)" *ngFor="let title of conversationTitles" class="menu-item-text">> {{title?.value}}</p>
+      <p (click)="selectConversation(title.key)" *ngFor="let title of conversationTitles" class="menu-item-text highlight">> {{title?.value}}</p>
     </div>
     <div class="menu-bottom">
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">

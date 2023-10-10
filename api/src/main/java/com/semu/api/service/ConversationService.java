@@ -69,6 +69,8 @@ public class ConversationService {
 
     public HashMap<Long, String> getLastConversationTitlesForUser(String email, Long amount) {
         List<Conversation> conversations = getConversationsByUser(email);
+        conversations.sort((c1, c2) -> c2.getLastUpdated().compareTo(c1.getLastUpdated()));
+
         HashMap<Long, String> conversationTitles = new HashMap<>();
         for (Conversation conversation : conversations) {
             if (conversationTitles.size() >= amount) {
