@@ -100,8 +100,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     } else {
       if (this.messages.length % 2 === 0) {
         this.isTyping = true;
-        // scroll to typingnotification element
-        this.typingNotification.scrollIntoView();
+        this.typingNotification.scrollIntoView(false);
       }
     }
   }
