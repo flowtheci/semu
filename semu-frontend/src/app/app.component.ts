@@ -10,9 +10,4 @@ export const backendUrl = 'https://semu-api.fly.dev/api/'; // prod: https://semu
 
 export class AppComponent {
   title = 'semu';
-
-
-
-
-
 }
