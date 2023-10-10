@@ -5,6 +5,7 @@ import com.semu.api.repository.ConversationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +23,9 @@ public class ConversationService {
     @Autowired
     private ChatGPTClient chatGPTClient;
 
+    @Autowired
+    private VoiceClient voiceClient;
+
     public Conversation addMessageAndAnswer(Conversation conversation, Message message) {
         conversation.addMessage(message);
         conversation.addMessage(chatGPTClient.getAiResponse(conversation));
@@ -29,26 +33,38 @@ public class ConversationService {
     }
 
     public Conversation addMessageAndAnswer(Conversation conversation, String message) {
-        conversation.addMessage(new Message(message, LocalDateTime.now(), true, conversation));
-        conversation.addMessage(chatGPTClient.getAiResponse(conversation));
-        return conversationRepository.save(conversation);
+        return addMessageAndAnswer(conversation, new Message(message, LocalDateTime.now(), true, conversation));
     }
 
     public Conversation startConversationAndAnswer(User user, String aiMessage, String userMessage) {
+        return startConversationAndAnswer(user, aiMessage, userMessage, false);
+    }
+
+    public Conversation startConversationAndAnswer(User user, String aiMessage, String userMessage, boolean useAudioPrompt) {
         Conversation conversation = new Conversation();
         conversation.setUser(user);
         conversation.addMessage(new Message(aiMessage, LocalDateTime.now(), false, conversation));
         conversation.addMessage(new Message(userMessage, LocalDateTime.now(), true, conversation));
-        conversation.addMessage(chatGPTClient.getAiResponse(conversation));
+        conversation.addMessage(chatGPTClient.getAiResponse(conversation, useAudioPrompt));
         conversation.setTitle(chatGPTClient.generateTitle(conversation));
         return conversationRepository.save(conversation);
+    }
+
+    public Conversation startAudioConversation(User user, String aiMessage, byte[] audio) {
+        String message = voiceClient.transcribeVoice(audio);
+        return startConversationAndAnswer(user, aiMessage, message, true);
+    }
+
+    public Conversation addAudioMessage(Conversation conversation, byte[] audio) {
+        String message = voiceClient.transcribeVoice(audio);
+        return addMessageAndAnswer(conversation, message);
     }
 
     public ReplyDTO getLastReplyDTO(Conversation conversation) {
         Long id = conversation.getId();
         String lastMessage = conversation.getMessages().get(conversation.getMessages().size() - 1).getContent();
-
-        return new ReplyDTO(id, lastMessage, String.valueOf(System.currentTimeMillis()));
+        byte[] audio = voiceClient.synthesizeVoice(lastMessage);
+        return new ReplyDTO(id, lastMessage, String.valueOf(System.currentTimeMillis()), audio);
     }
 
     public ConversationDTO getConversationDTO(Conversation conversation) {

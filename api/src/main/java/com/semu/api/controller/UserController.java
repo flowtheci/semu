@@ -59,7 +59,7 @@ public class UserController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsers(@RequestHeader(name = "Authorization") String authToken) {
         String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
-        if (email == null) {
+        if (email == null || email.equals("admin")) {
             return ResponseEntity.status(401).build();
         }
 

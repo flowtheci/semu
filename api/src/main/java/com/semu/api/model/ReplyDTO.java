@@ -1,11 +1,14 @@
 package com.semu.api.model;
 
+import java.sql.Blob;
+
 public class ReplyDTO {
 
     private Long id;
     private String title;
     private String lastMessage;
     private String lastMessageTimestamp;
+    private byte[] audio;
 
     public ReplyDTO() {
     }
@@ -15,6 +18,14 @@ public class ReplyDTO {
         this.lastMessage = lastMessage;
         this.lastMessageTimestamp = lastMessageTimestamp;
     }
+
+    public ReplyDTO(Long id, String lastMessage, String lastMessageTimestamp, byte[] audio) {
+        this.id = id;
+        this.lastMessage = lastMessage;
+        this.lastMessageTimestamp = lastMessageTimestamp;
+        this.audio = audio;
+    }
+
 
     public Long getId() {
         return id;
@@ -32,6 +43,10 @@ public class ReplyDTO {
         return title;
     }
 
+    public byte[] getAudio() {
+        return audio;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -46,5 +61,9 @@ public class ReplyDTO {
 
     public void setLastMessageTimestamp(String lastMessageTimestamp) {
         this.lastMessageTimestamp = lastMessageTimestamp;
+    }
+
+    public void setAudio(byte[] audio) {
+        this.audio = audio;
     }
 }
