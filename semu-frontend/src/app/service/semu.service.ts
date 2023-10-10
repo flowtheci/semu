@@ -11,8 +11,9 @@ import {AuthService} from "./auth.service";
 })
 export class SemuService {
 
-  _lastConversationId: string = ''
-  _lastTitle: string = ''
+  _lastConversationId: string = '';
+  _lastTitle: string = '';
+  _lastAudioUrl: string = '';
   _loading: boolean = false;
 
   _selectedConversation = '';
@@ -138,6 +139,19 @@ export class SemuService {
     }
   }
 
+  playLastAudio() {
+    const audio = new Audio(this._lastAudioUrl);
+    audio.play();
+  }
+
+  storeAudio(audio: string) {
+    const byteCharacters = atob(audio);
+    const byteNumbers = Array.from(byteCharacters).map(char => char.charCodeAt(0));
+    const byteArray = new Uint8Array(byteNumbers);
+    const audioBlob = new Blob([byteArray], { type: 'audio/wav' });
+    this._lastAudioUrl = URL.createObjectURL(audioBlob);
+  }
+
   async aiResponse(prompt: Message[]): Promise<string> {
     // Call the backend and return response
     const headers = {
@@ -157,6 +171,11 @@ export class SemuService {
         return response.toPromise().then((response: any) => {
           this._lastConversationId = response.id;
           this._lastTitle = response.title;
+          if (response?.audio) {
+            this.storeAudio(response.audio);
+          } else {
+            this._lastAudioUrl = '';
+          }
           return response.lastMessage;
         });
       } else {
@@ -164,6 +183,11 @@ export class SemuService {
         return response.toPromise().then((response: any) => {
           this._lastConversationId = response.id;
           this._lastTitle = response.title;
+          if (response?.audio) {
+            this.storeAudio(response.audio);
+          } else {
+            this._lastAudioUrl = '';
+          }
           return response.lastMessage;
         });
       }

@@ -11,6 +11,7 @@ import {SemuService} from "../../service/semu.service";
 export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
 
   @ViewChild('messageBox') chatWindowElement!: HTMLElement;
+  @ViewChild('typingNotification') typingNotification!: HTMLElement;
   @Input() isOpen = false;
   @Input() conversationIdToLoad: string = '';
 
@@ -99,6 +100,8 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     } else {
       if (this.messages.length % 2 === 0) {
         this.isTyping = true;
+        // scroll to typingnotification element
+        this.typingNotification.scrollIntoView();
       }
     }
   }
@@ -124,6 +127,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
       this.isTyping = false;
       this.messages.push(response);
       this.messageIndex++;
+      this.semuService.playLastAudio();
       if (this.conversationTitle === '') {
         this.conversationId = this.semuService.getLastConversationId();
         this.conversationTitle = this.semuService.getLastTitle();

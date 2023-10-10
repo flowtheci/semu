@@ -16,7 +16,7 @@
         <img src="assets/semu-hea.png" alt="Logo">
       </div>
     </div>
-    <div class="chat-message-container assistant" *ngIf="isTyping">
+    <div #typingNotification class="chat-message-container assistant" *ngIf="isTyping">
       <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
       <div class="assistant-icon">
         <img src="assets/semu-hea.png" alt="Logo">
