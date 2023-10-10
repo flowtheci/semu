@@ -1,5 +1,6 @@
 package com.semu.api.model;
 
+import java.sql.Blob;
 import java.util.List;
 
 public class ConversationDTO {

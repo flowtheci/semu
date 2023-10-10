@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Blob;
 import java.util.HashMap;
 import java.util.List;
 
@@ -77,6 +78,10 @@ public class ConversationController {
         return ResponseEntity.ok(conversationService.getConversationIds(email));
     }
 
+    /**
+     * Conversation title util
+     */
+
     @GetMapping("/getConversationTitles")
     public ResponseEntity<HashMap<Long, String>> getConversationTitles(@RequestHeader(name = "Authorization") String authToken, @RequestBody List<Long> conversationIds) {
         String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
@@ -95,6 +100,36 @@ public class ConversationController {
         }
 
         return ResponseEntity.ok(conversationService.getLastConversationTitlesForUser(email, amount));
+    }
+
+    /**
+     * Audio conversation endpoints
+     */
+
+    @PostMapping("/startAudioConversation")
+    public ResponseEntity<ReplyDTO> startAudioConversation(@RequestHeader(name = "Authorization") String authToken, @RequestBody byte[] audio) {
+        String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
+        if (email == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        Conversation conversation = conversationService.startAudioConversation(userService.getUserByEmail(email), "", audio);
+        ReplyDTO answer = conversationService.getLastReplyDTO(conversation);
+        if (conversation.getTitle() != null) {
+            answer.setTitle(conversation.getTitle());
+        }
+        return ResponseEntity.ok(answer);
+    }
+
+    @PostMapping("/addAudioMessage")
+    public ResponseEntity<ReplyDTO> addAudioMessage(@RequestHeader(name = "Authorization") String authToken, @RequestParam Long conversationId, @RequestBody byte[] audio) {
+        String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
+        if (email == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        Conversation conversation = conversationService.addAudioMessage(conversationService.getConversationByIdAndUser(conversationId, email), audio);
+        return ResponseEntity.ok(conversationService.getLastReplyDTO(conversation));
     }
 
 

@@ -34,13 +34,17 @@ public class ChatGPTClient {
         this.restTemplate = restTemplate;
     }
 
-
     public Message getAiResponse(Conversation conversation) throws RuntimeException {
+        return getAiResponse(conversation, false);
+    }
+
+
+    public Message getAiResponse(Conversation conversation, boolean useAudioPrompt) throws RuntimeException {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + apiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String prompt = getMathPrompt(conversation.getUser());
+        String prompt = useAudioPrompt ? getChatPrompt() : getMathPrompt(conversation.getUser());
         List<Map<String, String>> finalMessages = new ArrayList<>();
         finalMessages.add(Map.of("role", "system", "content", prompt));
 
@@ -111,6 +115,12 @@ public class ChatGPTClient {
     private String getMathPrompt(User user) {
         return "Sa oled matemaatika õpetaja nimega Semu, kes aitab hetkel õpilast nimega " + user.getFirstName() + " ainult matemaatiliste ülesannetega. Sinu eesmärgiks on õpetada kasutajat lahendandama matemaatilisi ülesandeid ning selgeks tegema kuidas ülesandeid lahendada. Sa tohid vastata ainult matemaatikaga seotud küsimustele ning mitte millelegi muule. Semu on loodud Eesti keeles, nii et sa peaksid rääkima vaid Eesti keeles. Palved sulle on eesti keelsed. Jaota vastus mitmeks osaks, et neid saaks avaldada õpilasele veebilehel samm sammult vajutades nuppu avalda. Sinu ülesanne on õpetada 4. klassi õpilast, kasuta sõnavara, mis aitab 4.klassi õpilasel paremini ülesannetest aru saada Too näiteid toetamaks teoreetilisi ülesandeid. Sinu ülesanne on selle ülesandega seostuvad teooriat selgitada, kuid ära näita kasutajale vastust, võid kasutada näiteks muude numbritega ülesannet.";
 
+    }
+
+    private String getChatPrompt() {
+        return "Sa oled eesti keeles rääkiv sõber nimega Semu. Sinu ülesandeks on vestelda ning vestluse kaudu õpetada sinuga rääkijat eesti keelt rääkima. Kasutaja räägib sinuga audio kaudu, sinuni jõuab tekst transkribeerituna ning sinu vastus konverteeritakse audioks tagasi. Juhul kui transkribeeritud tekstis on täitmata lünkasid või sõna tundub konteksti väline, proovi aru saada kontekstist ning jää selle teema siseseks. \n" +
+                "Kasutaja võib sult küsimusi küsida, sinu (Semu) küsimustele vastata ning lihtsalt sinuga vestelda. Iga sinu vastus peab lõppema küsimusega. Küsimused peavad olema vestlust arendavad ning ei tohi olla vastatavad jah või ei vastusega. \n" +
+                "Proovi tekitada arutelu erinevate teemade üle, mis tunduvad olevat kasutajale huvitavad ning intrigeerivad teemad. Vestluses kasuta lihtsaid eestikeelseid sõnu sest sinuga vestlev inimene ei pruugi eesti keelt väga hästi mõista. ";
     }
 
     private String getTitlePrompt() {
