@@ -1,4 +1,4 @@
-name: Build and Deploy Java API
+name: Build and Release Java API
 
 on:
   push:
@@ -6,43 +6,58 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
+  build-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
-    - name: Check out the code
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
-
-    - name: Cache Maven packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-m2
+        server-id: github
+        settings-path: ${{ github.workspace }}
 
     - name: Build with Maven
-      run: mvn -B package
+      run: mvn -B package --file api/pom.xml
+      working-directory: ./api
 
-    - name: Auto-increment version and create tag
-      id: auto_tag
-      uses: anothrNick/github-tag-action@1.36.0
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        default_bump: patch
-        release_branches: master
 
-    - name: Deploy to GitHub Releases
-      if: startsWith(github.ref, 'refs/heads/master')
-      uses: softprops/action-gh-release@v1
+    - name: Get the current version
+      id: get_version
+      run: echo "CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+      working-directory: ./api
+
+    - name: Increment the version
+      id: increment_version
+      uses: christian-draeger/increment-semantic-version@1.0.3
       with:
-        files: |
-          target/*.jar
+        current-version: ${{ env.CURRENT_VERSION }}
+        increment-major: false
+        increment-minor: true
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.increment_version.outputs.next-version }}
+        release_name: Release ${{ steps.increment_version.outputs.next-version }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./api/target/your-artifact-name.jar
+        asset_name: your-artifact-name.jar
+        asset_content_type: application/java-archive
