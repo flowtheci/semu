@@ -2,7 +2,7 @@ name: Build and Release Java API
 
 on:
   workflow_run:
-    workflows: ["Increment Major Version", "Increment Minor Version"]
+    workflows: ["Increment Major Version", "Increment Minor Version", "Increment Patch Version"]
     types:
       - completed
     branches:
