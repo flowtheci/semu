@@ -1,0 +1,37 @@
+name: Increment Major Version
+
+on:
+  workflow_dispatch:
+
+jobs:
+  increment-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Increment major version
+        run: |
+          # Extract current version from pom.xml
+          VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" api/pom.xml)
+          # Get the prefix (major version) and increment it
+          MAJOR=$(echo $VERSION | grep -oP '^\d+')
+          NEW_MAJOR=$((MAJOR+1))
+          # Replace the major version
+          NEW_VERSION="${NEW_MAJOR}.0.0-SNAPSHOT"
+          # Update pom.xml with the new version
+          sed -i "s|<version>${VERSION}</version>|<version>${NEW_VERSION}</version>|g" api/pom.xml
+          # Show the updated pom.xml for logging
+          cat api/pom.xml
+        shell: bash
+
+      - name: Commit changes
+        run: |
+          git config user.name 'GitHub Action'
+          git config user.email 'action@github.com'
+          git add api/pom.xml
+          git commit -m "Increment major version to ${NEW_VERSION}"
+          git push
+        env:
+          NEW_VERSION: ${{ steps.set-version.outputs.NEW_VERSION }}
+        shell: bash
