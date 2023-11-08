@@ -10,6 +10,9 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
+      - name: Install xmllint
+        run: sudo apt-get install -y libxml2-utils
+
       - name: Increment major version
         run: |
           # Extract current version from pom.xml
