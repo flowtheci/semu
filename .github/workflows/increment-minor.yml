@@ -17,17 +17,22 @@ jobs:
         run: |
           # Extract current version from pom.xml
           VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" api/pom.xml)
-          # Get the prefix and the minor version
-          PREFIX=$(echo $VERSION | grep -oP '^\d+\.\d+\.')
-          MINOR=$(echo $VERSION | grep -oP '(?<=^\d+\.\d+\.)\d+')
+          
+          # Use 'cut' and 'tr' to extract the major, minor, and patch version
+          MAJOR=$(echo $VERSION | cut -d '.' -f 1)
+          MINOR=$(echo $VERSION | cut -d '.' -f 2)
+          PATCH=$(echo $VERSION | tr '-' '.' | cut -d '.' -f 3) # assuming version format is like 0.0.5-SNAPSHOT
+          
           # Increment minor version
           NEW_MINOR=$((MINOR+1))
-          # Replace the minor version
-          NEW_VERSION="${PREFIX}${NEW_MINOR}-SNAPSHOT"
+          NEW_VERSION="${MAJOR}.${NEW_MINOR}.0-SNAPSHOT"
+          
           # Update pom.xml with the new version
           sed -i "s|<version>${VERSION}</version>|<version>${NEW_VERSION}</version>|g" api/pom.xml
+          
           # Show the updated pom.xml for logging
           cat api/pom.xml
+
         shell: bash
 
       - name: Commit changes
