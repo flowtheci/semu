@@ -1,0 +1,44 @@
+name: Increment Patch Version
+
+on:
+  workflow_dispatch:
+
+jobs:
+  increment-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Install xmllint
+        run: sudo apt-get install -y libxml2-utils
+
+      - name: Increment patch version
+        run: |
+          # Extract current version from pom.xml
+          VERSION=$(xmllint --xpath "//*[local-name()='project']/*[local-name()='version']/text()" api/pom.xml)
+          
+          # Use 'cut' to extract the major, minor, and patch version
+          MAJOR=$(echo $VERSION | cut -d '.' -f 1)
+          MINOR=$(echo $VERSION | cut -d '.' -f 2)
+          PATCH=$(echo $VERSION | cut -d '.' -f 3 | sed 's/-SNAPSHOT//') # Extract the patch number without "-SNAPSHOT"
+          
+          # Increment patch version
+          NEW_PATCH=$((PATCH+1))
+          NEW_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}-SNAPSHOT"
+          
+          # Update pom.xml with the new version
+          sed -i "s|<version>${VERSION}</version>|<version>${NEW_VERSION}</version>|g" api/pom.xml
+          
+          # Show the updated pom.xml for logging
+          cat api/pom.xml
+        shell: bash
+
+      - name: Commit changes
+        run: |
+          git config user.name 'GitHub Action'
+          git config user.email 'action@github.com'
+          git add api/pom.xml
+          git commit -m "Increment patch version to ${NEW_VERSION}"
+          git push
+        shell: bash
