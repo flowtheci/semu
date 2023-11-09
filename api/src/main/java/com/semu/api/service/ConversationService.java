@@ -28,7 +28,7 @@ public class ConversationService {
 
     public Conversation addMessageAndAnswer(Conversation conversation, Message message) {
         conversation.addMessage(message);
-        conversation.addMessage(chatGPTClient.getAiResponse(conversation));
+        conversation = chatGPTClient.assist(conversation);
         return conversationRepository.save(conversation);
     }
 
@@ -37,22 +37,22 @@ public class ConversationService {
     }
 
     public Conversation startConversationAndAnswer(User user, String aiMessage, String userMessage) {
-        return startConversationAndAnswer(user, aiMessage, userMessage, false);
+        return startConversationAndAnswer(user, aiMessage, userMessage, true);
     }
 
-    public Conversation startConversationAndAnswer(User user, String aiMessage, String userMessage, boolean useAudioPrompt) {
+    public Conversation startConversationAndAnswer(User user, String aiMessage, String userMessage, boolean useMathPrompt) {
         Conversation conversation = new Conversation();
         conversation.setUser(user);
         conversation.addMessage(new Message(aiMessage, LocalDateTime.now(), false, conversation));
         conversation.addMessage(new Message(userMessage, LocalDateTime.now(), true, conversation));
-        conversation.addMessage(chatGPTClient.getAiResponse(conversation, useAudioPrompt));
-        conversation.setTitle(chatGPTClient.generateTitle(conversation));
+        conversation = chatGPTClient.assist(conversation, useMathPrompt);
+        System.out.println(conversation);
         return conversationRepository.save(conversation);
     }
 
     public Conversation startAudioConversation(User user, String aiMessage, byte[] audio) {
         String message = voiceClient.transcribeVoice(audio);
-        return startConversationAndAnswer(user, aiMessage, message, true);
+        return startConversationAndAnswer(user, aiMessage, message, false);
     }
 
     public Conversation addAudioMessage(Conversation conversation, byte[] audio) {

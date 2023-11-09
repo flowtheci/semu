@@ -15,6 +15,8 @@ public class Message {
     private LocalDateTime timestamp;
     private boolean isUser;
 
+    private String threadMessageId;
+
     @ManyToOne
     @JoinColumn(name = "conversation_id")
     private Conversation conversation;
@@ -47,6 +49,14 @@ public class Message {
 
     public Conversation getConversation() {
         return conversation;
+    }
+
+    public String getThreadMessageId() {
+        return threadMessageId;
+    }
+
+    public void setThreadMessageId(String threadMessageId) {
+        this.threadMessageId = threadMessageId;
     }
 
     public void setId(Long id) {
