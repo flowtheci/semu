@@ -1,0 +1,6 @@
+runtime: java17
+handlers:
+  - url: /.*
+    script: true
+    secure: always
+    redirect_http_response_code: 301

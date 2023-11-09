@@ -132,6 +132,15 @@
 					</environmentVariables>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+				<version>2.4.4</version>
+				<configuration>
+					<deploy.projectId>tribal-saga-397814</deploy.projectId>
+					<version>1</version>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

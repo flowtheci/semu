@@ -7,11 +7,6 @@ on:
       - completed
     branches:
       - master
-  push:
-    branches:
-      - master
-    paths:
-      - 'api/**'
 
 jobs:
   build-and-release:

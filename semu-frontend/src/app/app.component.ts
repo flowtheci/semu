@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-export const backendUrl = false ? 'http://localhost:8080/api/' : 'https://semu-api.fly.dev/api/'; // prod: https://semu-api.fly.dev/api/ dev: http://localhost:8080/api/
+export const backendUrl = false ? 'http://localhost:8080/api/' : 'https://tribal-saga-397814.lm.r.appspot.com/api/';
 
 @Component({
   selector: 'app-root',
