@@ -8,6 +8,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -65,13 +66,20 @@ public class ChatGPTClient {
         Map<String, Object> body = new HashMap<>();
         body.put("assistant_id", assistantId);
 
+        Instant timestamp = Instant.now();
+
+
         String runId = doPostRequest(runUrl, new HttpEntity<>(body, headers), "id");
-        while (!checkIfRunFinished(runId, conversation.getThreadId())) {
+        while (!checkIfRunFinished(runId, conversation.getThreadId()) && Instant.now().isBefore(timestamp.plusSeconds(30))) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+
+        if (Instant.now().isAfter(timestamp.plusSeconds(30))) {
+            throw new RuntimeException("Run took too long, cancelled.");
         }
 
         updateConversationWithResponse(conversation);
@@ -81,6 +89,9 @@ public class ChatGPTClient {
         String runUrl = String.format("%s/%s/runs/%s", apiUrl, threadId, runId);
         String runStatus = doGetRequest(runUrl, "status", String.class);
         System.out.println("Run " + runId + " on thread " + threadId + " has status: " + runStatus);
+        if (runStatus != null && runStatus.equals("failed")) {
+            throw new RuntimeException("Run status failed.");
+        }
         return runStatus != null && runStatus.equals("completed");
     }
 
