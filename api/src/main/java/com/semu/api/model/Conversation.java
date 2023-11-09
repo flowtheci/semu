@@ -17,7 +17,8 @@ public class Conversation {
     private User user;
 
     private String title;
-    private String prompt;
+
+    private String threadId;
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("timestamp ASC")
@@ -65,6 +66,14 @@ public class Conversation {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getThreadId() {
+        return threadId;
+    }
+
+    public void setThreadId(String threadId) {
+        this.threadId = threadId;
     }
 
     public void setTitle(String title) {
