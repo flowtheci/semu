@@ -63,8 +63,8 @@ public class ConversationService {
     public ReplyDTO getLastReplyDTO(Conversation conversation) {
         Long id = conversation.getId();
         String lastMessage = conversation.getMessages().get(conversation.getMessages().size() - 1).getContent();
-        byte[] audio = voiceClient.synthesizeVoice(lastMessage);
-        return new ReplyDTO(id, lastMessage, String.valueOf(System.currentTimeMillis()), audio);
+        // byte[] audio = voiceClient.synthesizeVoice(lastMessage);
+        return new ReplyDTO(id, lastMessage, String.valueOf(System.currentTimeMillis()));
     }
 
     public ConversationDTO getConversationDTO(Conversation conversation) {
