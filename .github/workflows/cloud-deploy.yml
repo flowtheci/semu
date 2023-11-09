@@ -6,7 +6,8 @@ on:
       - master
     paths:
       - 'api/**'
-
+  workflow_dispatch:
+  
 jobs:
   build-and-deploy:
     permissions: write-all
