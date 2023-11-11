@@ -12,7 +12,6 @@
       </div>
       <app-typewriter *ngIf="message.isTypeable" [fast]="message.fast ?? false" (typingFinished)="onTypingFinished()" [startTyping]="messageIndex === message.id && !message.hasStartedTyping" class="chat-message" [class.left]="!message.isUser" [message]="message"></app-typewriter>
       <div [class.left]="!message.isUser" class="chat-message" *ngIf="!message.isTypeable" [mathjax]="message.content"></div>
-      
       <div *ngIf="!message.isUser" class="assistant-icon">
         <img src="assets/semu-hea.png" alt="Logo">
       </div>
