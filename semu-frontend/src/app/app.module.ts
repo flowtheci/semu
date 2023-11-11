@@ -14,6 +14,7 @@ import { LogoComponent } from './components/logo/logo.component';
 import {PromptUtil} from "./prompts";
 import {JwtModule} from "@auth0/angular-jwt";
 import { ServiceWorkerModule } from '@angular/service-worker';
+import {MathjaxModule} from "mathjax-angular";
 
 export function tokenGetter() {
   return localStorage.getItem("authToken");
@@ -34,6 +35,14 @@ export function tokenGetter() {
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    MathjaxModule.forRoot({config: {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    }}),
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,

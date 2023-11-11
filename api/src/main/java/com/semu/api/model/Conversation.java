@@ -96,6 +96,10 @@ public class Conversation {
         this.lastUpdated = lastUpdated;
     }
 
+    public Message getLastMessage() {
+        return messages.get(messages.size() - 1);
+    }
+
     @Override
     public String toString() {
         return "Conversation{" +

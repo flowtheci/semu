@@ -27,6 +27,7 @@ export class TypewriterComponent implements OnInit, OnChanges {
   typeSpeed = 50;
   fastTypeSpeed = 10;
   text = '';
+  displayText = '';
 
   ngOnInit(): void {
     this.text = this.message?.content || ''
@@ -49,22 +50,27 @@ export class TypewriterComponent implements OnInit, OnChanges {
   startType(): void {
     console.warn('startType : ' + this.text);
     this.blinkingCursorElement.nativeElement.style.visibility = 'visible';
-    this.textContainerElement.nativeElement.textContent = '';
+    this.displayText = '';
+    this.scrollOnType();
     this.type();
   }
 
   type(): void {
     if (this.index < this.text.length) {
-      this.textContainerElement.nativeElement.textContent = this.text.slice(0, this.index);
+      this.displayText = this.text.slice(0, this.index);
       this.index++;
-      this.scrollOnType();
       setTimeout(() => this.type(), Math.random() * (this.fast ? this.fastTypeSpeed : this.typeSpeed));
     } else {
-      this.textContainerElement.nativeElement.textContent = this.text.slice(0, this.index);
-      this.scrollOnType();
+      this.displayText = this.text.slice(0, this.index);
       this.typingFinished.emit(true); // Emit the typingFinished event when typing is finished
     }
   }
+
+  checkIfTypedTextHasLatex(): boolean {
+    const regex = /(\$\$.*?\$\$|\\\[.*?\\\]|\\\(.+?\\\)|\$[^$]*\$)/gs;
+    return regex.test(this.text);
+  }
+
 
   scrollOnType() {
     this.textContainerElement.nativeElement.scrollIntoView(true);

@@ -41,9 +41,9 @@ export class SemuService {
   }
 
 
-  async responseAsMessage(messages: Message[]): Promise<Message> {
+  async responseAsMessage(messages: Message[], isImage?: boolean): Promise<Message> {
     try {// Get the last message from the user
-      return this.aiResponse(messages).then(
+      return this.aiResponse(messages, isImage).then(
         (response: string) => {
           return {
             id: messages[messages.length - 1].id + 1,
@@ -152,7 +152,7 @@ export class SemuService {
     this._lastAudioUrl = URL.createObjectURL(audioBlob);
   }
 
-  async aiResponse(prompt: Message[]): Promise<string> {
+  async aiResponse(prompt: Message[], isImage?: boolean): Promise<string> {
     // Call the backend and return response
     const headers = {
       'Content-Type': 'application/json',
@@ -163,11 +163,13 @@ export class SemuService {
       finalMessages.push(prompt[i].content);
     }
 
+    const lastMessage = prompt[prompt.length - 1].content;
+
     const isFirstMessage = prompt.length === 2;
     try {
 
       if (isFirstMessage) {
-        const response = this.http.post(backendUrl + 'conversations/startConversation', finalMessages, {headers});
+        const response = this.http.post(backendUrl + 'conversations/start' + (isImage ? 'Image' : '') + 'Conversation', isImage ? lastMessage : finalMessages, {headers});
         return response.toPromise().then((response: any) => {
           this._lastConversationId = response.id;
           this._lastTitle = response.title;

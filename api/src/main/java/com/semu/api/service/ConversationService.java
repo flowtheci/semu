@@ -5,7 +5,6 @@ import com.semu.api.repository.ConversationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Blob;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,14 +20,17 @@ public class ConversationService {
     private UserService userService;
 
     @Autowired
-    private ChatGPTClient chatGPTClient;
+    private AssistantClient assistantClient;
 
     @Autowired
     private VoiceClient voiceClient;
 
+    @Autowired
+    private VisionClient visionClient;
+
     public Conversation addMessageAndAnswer(Conversation conversation, Message message) {
         conversation.addMessage(message);
-        conversation = chatGPTClient.assist(conversation);
+        conversation = assistantClient.assist(conversation);
         return conversationRepository.save(conversation);
     }
 
@@ -36,23 +38,30 @@ public class ConversationService {
         return addMessageAndAnswer(conversation, new Message(message, LocalDateTime.now(), true, conversation));
     }
 
-    public Conversation startConversationAndAnswer(User user, String aiMessage, String userMessage) {
-        return startConversationAndAnswer(user, aiMessage, userMessage, true);
+    public Conversation startConversationAndAnswer(User user, String userMessage, Assistants prompt) {
+        return startConversationAndAnswer(user, null, userMessage, prompt);
     }
 
-    public Conversation startConversationAndAnswer(User user, String aiMessage, String userMessage, boolean useMathPrompt) {
+    public Conversation startConversationAndAnswer(User user, String aiMessage, String userMessage) {
+        return startConversationAndAnswer(user, aiMessage, userMessage, Assistants.MathAssistant);
+    }
+
+    public Conversation startConversationAndAnswer(User user, String aiMessage, String userMessage, Assistants prompt) {
         Conversation conversation = new Conversation();
         conversation.setUser(user);
-        conversation.addMessage(new Message(aiMessage, LocalDateTime.now(), false, conversation));
+        if (aiMessage != null) {
+            conversation.addMessage(new Message(aiMessage, LocalDateTime.now(), false, conversation));
+        }
         conversation.addMessage(new Message(userMessage, LocalDateTime.now(), true, conversation));
-        conversation = chatGPTClient.assist(conversation, useMathPrompt);
+        conversation = assistantClient.assist(conversation, prompt);
         System.out.println(conversation);
         return conversationRepository.save(conversation);
     }
 
+
     public Conversation startAudioConversation(User user, String aiMessage, byte[] audio) {
         String message = voiceClient.transcribeVoice(audio);
-        return startConversationAndAnswer(user, aiMessage, message, false);
+        return startConversationAndAnswer(user, aiMessage, message, Assistants.EstonianAssistant);
     }
 
     public Conversation addAudioMessage(Conversation conversation, byte[] audio) {
@@ -60,9 +69,16 @@ public class ConversationService {
         return addMessageAndAnswer(conversation, message);
     }
 
+
+    public Conversation startImageConversation(User user, String imageUrl) {
+        String visionResult = visionClient.analyzeImage(imageUrl);
+        return startConversationAndAnswer(user, visionResult, Assistants.MathVisionAssistant);
+    }
+
+
     public ReplyDTO getLastReplyDTO(Conversation conversation) {
         Long id = conversation.getId();
-        String lastMessage = conversation.getMessages().get(conversation.getMessages().size() - 1).getContent();
+        String lastMessage = conversation.getLastMessage().getContent();
         // byte[] audio = voiceClient.synthesizeVoice(lastMessage);
         return new ReplyDTO(id, lastMessage, String.valueOf(System.currentTimeMillis()));
     }

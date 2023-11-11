@@ -31,4 +31,5 @@
     </svg>
     <div (click)="onSendMessage(input.value, input)" class="send-button"></div>
   </div>
+  <input type="file" (change)="onFileSelected($event)" accept="image/*">
 </div>

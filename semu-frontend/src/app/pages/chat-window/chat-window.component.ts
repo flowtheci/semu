@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {Message} from 'src/app/model/message';
 import {SemuService} from "../../service/semu.service";
+import {HttpClient} from "@angular/common/http";
 
 
 @Component({
@@ -22,8 +23,9 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   conversationId: string = '0'
   conversationTitle: string = '';
   conversationArray: number[] = [];
+  private imagePreview: string | ArrayBuffer | null | undefined;
 
-  constructor(private semuService: SemuService) {
+  constructor(private semuService: SemuService, private http: HttpClient) {
   }
 
   get userName() {
@@ -46,7 +48,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     this.messages = [
       {
         id: 0,
-        content: 'Hei ' + this.userName + '! Mina olen SEMU, Sinu virtuaalne matemaatikaõpetaja. Kui Sul on mõni matemaatiline küsimus või probleem, siis olen siin, et Sind aidata. Koos saame kõigega hakkama! 😊',
+        content: 'Hei semu! Mina olen SEMU, Sinu virtuaalne matemaatikaõpetaja. Kui Sul on mõni matemaatiline küsimus või probleem, siis olen siin, et Sind aidata. Koos saame kõigega hakkama! 😊',
         timestamp: new Date(),
         isUser: false,
         hasStartedTyping: false,
@@ -99,13 +101,12 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
       this.messageIndex++;
     } else {
       if (this.messages.length % 2 === 0) {
-        this.isTyping = true;
         this.typingNotification.scrollIntoView(false);
       }
     }
   }
 
-  async onSendMessage(message: string, elementRef: HTMLTextAreaElement): Promise<void> {
+  async onSendMessage(message: string, elementRef?: HTMLTextAreaElement): Promise<void> {
     const newId = this.messages.length;
     this.messages.push({
       id: newId,
@@ -113,15 +114,18 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
       timestamp: new Date(),
       isUser: true,
       hasStartedTyping: false,
-      isTypeable: true,
+      isTypeable: false,
     });
     this.messageIndex++;
-    elementRef.value = '';
+    this.isTyping = true;
 
-    const event = {target: elementRef};
-    this.adjustTextareaHeight(event)
+    if (elementRef) {
+      elementRef.value = '';
+      const event = {target: elementRef};
+      this.adjustTextareaHeight(event)
+    }
 
-    const response = this.semuService.responseAsMessage(this.messages);
+    const response = this.semuService.responseAsMessage(this.messages, true);
     response.then((response: Message) => {
       this.isTyping = false;
       this.messages.push(response);
@@ -167,6 +171,25 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
       ];
       this.messageIndex = 0;
   }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = this.handleReaderLoaded.bind(this);
+      reader.readAsDataURL(file);
+    }
+  }
+
+  handleReaderLoaded(e: { target: any; }) {
+    const reader = e.target;
+    const base64result = reader.result.substr(reader.result.indexOf(',') + 1);
+
+    this.onSendMessage(base64result);
+  }
+
+
+
 }
 
 

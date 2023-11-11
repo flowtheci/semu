@@ -1,7 +1,9 @@
 package com.semu.api.service;
 
+import com.semu.api.config.AssistantProperties;
 import com.semu.api.model.Conversation;
 import com.semu.api.model.Message;
+import com.semu.api.model.Assistants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -13,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-public class ChatGPTClient {
+public class AssistantClient {
 
     @Value("${chatgpt.api.key}")
     private String apiKey;
@@ -21,36 +23,27 @@ public class ChatGPTClient {
     @Value("${chatgpt.api.url}")
     private String apiUrl;
 
-    @Value("${chatgpt.api.old-url}")
-    private String oldApiUrl;
-
-    @Value("${chatgpt.assistant.math}")
-    private String mathAssistantId;
-
-    @Value("${chatgpt.assistant.title}")
-    private String titleAssistantId;
-
-    @Value("${chatgpt.assistant.estonian}")
-    private String estonianAssistantId;
+    @Autowired
+    private AssistantProperties assistantProperties;
 
     private final RestTemplate restTemplate;
 
     @Autowired
-    public ChatGPTClient(RestTemplate restTemplate) {
+    public AssistantClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     public Conversation assist(Conversation conversation) throws RuntimeException {
-        return assist(conversation, true);
+        return assist(conversation, Assistants.MathAssistant);
     }
 
-    public Conversation assist(Conversation conversation, boolean useMathModule) throws RuntimeException {
+    public Conversation assist(Conversation conversation, Assistants prompt) throws RuntimeException {
         if (conversation.getThreadId() == null) {
             conversation.setThreadId(createEmptyThread());
         }
 
         addLastMessageToThread(conversation);
-        run(conversation, useMathModule);
+        run(conversation, prompt);
 
         if (conversation.getTitle() == null) {
             conversation.setTitle(generateTitle(conversation));
@@ -59,9 +52,9 @@ public class ChatGPTClient {
     }
 
 
-    private void run(Conversation conversation, boolean useMathModule) throws RuntimeException {
+    private void run(Conversation conversation, Assistants prompt) throws RuntimeException {
         HttpHeaders headers = headers();
-        String assistantId = useMathModule ? mathAssistantId : estonianAssistantId;
+        String assistantId = assistantProperties.get(prompt);
         String runUrl = String.format("%s/%s/runs", apiUrl, conversation.getThreadId());
         Map<String, Object> body = new HashMap<>();
         body.put("assistant_id", assistantId);
@@ -78,7 +71,7 @@ public class ChatGPTClient {
             }
         }
 
-        if (Instant.now().isAfter(timestamp.plusSeconds(30))) {
+        if (Instant.now().isAfter(timestamp.plusSeconds(60))) {
             throw new RuntimeException("Run took too long, cancelled.");
         }
 
@@ -142,38 +135,15 @@ public class ChatGPTClient {
 
 
     private String generateTitle(Conversation conversation) {
-        HttpHeaders headers = headers(false);
-
-        String prompt = getTitlePrompt();
-        List<Map<String, String>> finalMessages = new ArrayList<>();
-        finalMessages.add(Map.of("role", "system", "content", prompt));
-
-        for (Message message : conversation.getMessages()) {
-            Map<String, String> msg = new HashMap<>();
-            msg.put("role", message.isUser() ? "user" : "assistant");
-            msg.put("content", message.getContent());
-            finalMessages.add(msg);
-        }
-
-        Map<String, Object> body = new HashMap<>();
-        body.put("model", "gpt-3.5-turbo");
-        body.put("messages", finalMessages);
-
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-
-        try {
-            ResponseEntity<Map> response = restTemplate.postForEntity(oldApiUrl, request, Map.class);
-            Map<String, Object> responseBody = response.getBody();
-            List<Map<String, Object>> choices = (List<Map<String, Object>>) responseBody.get("choices");
-            Map<String, Object> choice = choices.get(0);
-
-           String result = ((LinkedHashMap<String, String>) choice.get("message")).get("content");
-           System.out.println(result);
-
-           return result;
-        } catch (Exception e) {
-            throw new RuntimeException("Error calling OpenAI API:", e);
-        }
+        String threadId = createEmptyThread();
+        String oldId = conversation.getThreadId();
+        conversation.setThreadId(threadId);
+        addLastMessageToThread(conversation);
+        run(conversation, Assistants.TitleAssistant);
+        String result = conversation.getLastMessage().getContent();
+        conversation.removeMessage(conversation.getLastMessage());
+        conversation.setThreadId(oldId);
+        return result;
     }
 
 
@@ -216,8 +186,4 @@ public class ChatGPTClient {
             throw new RuntimeException("Error creating thread:", e);
         }
     }
-    private String getTitlePrompt() {
-        return "Sina oled TitleGPT: Sinu ainus eesmärk on luua pealkiri vestlusele mis hõlmab mida kasutaja AI õpirobotilt küsis võimalikult lihtsalt. Pealkiri peaks alati jääma alla 5 sõna. Vestluse kuju põhjal tagasta vaid võimalik pealkiri ning ära lisa vastusesse mingit muud teksti. Ära sisalda vastuses jutumärke ega ühtegi muud sümbolit mis pealkirja ei sobiks. Vasta AINULT pealkirjaga.";
-    }
-
-    }
+}
