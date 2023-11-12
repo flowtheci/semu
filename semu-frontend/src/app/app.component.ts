@@ -9,5 +9,5 @@ export const backendUrl = false ? 'http://localhost:8080/api/' : 'https://tribal
 })
 
 export class AppComponent {
-  title = 'semu';
+  title = 'SEMU';
 }

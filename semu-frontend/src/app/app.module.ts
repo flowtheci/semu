@@ -15,6 +15,7 @@ import {PromptUtil} from "./prompts";
 import {JwtModule} from "@auth0/angular-jwt";
 import { ServiceWorkerModule } from '@angular/service-worker';
 import {MathjaxModule} from "mathjax-angular";
+import { VoiceRecorderComponent } from './components/voice-recorder/voice-recorder.component';
 
 export function tokenGetter() {
   return localStorage.getItem("authToken");
@@ -29,7 +30,8 @@ export function tokenGetter() {
     ChatWindowComponent,
     TypewriterComponent,
     UserSetupComponent,
-    LogoComponent
+    LogoComponent,
+    VoiceRecorderComponent
   ],
   imports: [
     BrowserModule,

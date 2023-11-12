@@ -4,6 +4,8 @@ import com.semu.api.config.AssistantProperties;
 import com.semu.api.model.Conversation;
 import com.semu.api.model.Message;
 import com.semu.api.model.Assistants;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -58,11 +60,10 @@ public class AssistantClient {
         String runUrl = String.format("%s/%s/runs", apiUrl, conversation.getThreadId());
         Map<String, Object> body = new HashMap<>();
         body.put("assistant_id", assistantId);
-
         Instant timestamp = Instant.now();
 
-
         String runId = doPostRequest(runUrl, new HttpEntity<>(body, headers), "id");
+        System.out.println("Running assistant " + prompt + "with run id " + runId + " on thread " + conversation.getThreadId());
         while (!checkIfRunFinished(runId, conversation.getThreadId()) && Instant.now().isBefore(timestamp.plusSeconds(30))) {
             try {
                 Thread.sleep(1000);
@@ -98,6 +99,7 @@ public class AssistantClient {
         return doPostRequest(apiUrl, request, "id");
     }
 
+    @Transactional
     private void addLastMessageToThread(Conversation conversation) throws RuntimeException {
         HttpHeaders headers = headers();
         Map<String, Object> body = new HashMap<>();
@@ -134,7 +136,7 @@ public class AssistantClient {
 
 
 
-    private String generateTitle(Conversation conversation) {
+    public String generateTitle(Conversation conversation) {
         String threadId = createEmptyThread();
         String oldId = conversation.getThreadId();
         conversation.setThreadId(threadId);
@@ -147,18 +149,12 @@ public class AssistantClient {
     }
 
 
-    private HttpHeaders headers(boolean beta) {
+    private HttpHeaders headers() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + apiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        if (beta) {
-            headers.set("OpenAI-Beta", "assistants=v1");
-        }
+        headers.set("OpenAI-Beta", "assistants=v1");
         return headers;
-    }
-
-    private HttpHeaders headers() {
-        return headers(true);
     }
 
     private <X> X doGetRequest(String url, String returnGetter, Class<X> returnType) throws RuntimeException {

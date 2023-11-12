@@ -61,6 +61,10 @@ export class SemuService {
     }
   }
 
+  async audioResponse() {
+
+  }
+
   getLastConversationId(): string {
     return this._lastConversationId;
   }

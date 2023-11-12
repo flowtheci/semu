@@ -1,8 +1,6 @@
 package com.semu.api.controller;
 
-import com.semu.api.model.Conversation;
-import com.semu.api.model.ConversationDTO;
-import com.semu.api.model.ReplyDTO;
+import com.semu.api.model.*;
 import com.semu.api.service.ConversationService;
 import com.semu.api.service.JwtService;
 import com.semu.api.service.UserService;
@@ -10,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Blob;
 import java.util.HashMap;
 import java.util.List;
 
@@ -107,29 +105,49 @@ public class ConversationController {
      */
 
     @PostMapping("/startAudioConversation")
-    public ResponseEntity<ReplyDTO> startAudioConversation(@RequestHeader(name = "Authorization") String authToken, @RequestBody byte[] audio) {
+    public ResponseEntity<TranscriptionDTO> startAudioConversation(@RequestHeader(name = "Authorization") String authToken, @RequestParam("audioMessage") MultipartFile audioFile) {
         String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
         if (email == null) {
             return ResponseEntity.status(401).build();
         }
 
-        Conversation conversation = conversationService.startAudioConversation(userService.getUserByEmail(email), "", audio);
-        ReplyDTO answer = conversationService.getLastReplyDTO(conversation);
-        if (conversation.getTitle() != null) {
-            answer.setTitle(conversation.getTitle());
+        try {
+            Conversation conversation = conversationService.startAudioConversation(userService.getUserByEmail(email), audioFile.getBytes());
+            TranscriptionDTO answer = conversationService.getTranscriptionDTO(conversation);
+            return ResponseEntity.ok(answer);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error: " + e.getMessage());
+            return ResponseEntity.status(500).build();
         }
-        return ResponseEntity.ok(answer);
     }
 
     @PostMapping("/addAudioMessage")
-    public ResponseEntity<ReplyDTO> addAudioMessage(@RequestHeader(name = "Authorization") String authToken, @RequestParam Long conversationId, @RequestBody byte[] audio) {
+    public ResponseEntity<TranscriptionDTO> addAudioMessage(@RequestHeader(name = "Authorization") String authToken, @RequestParam Long conversationId, @RequestParam("audioMessage") MultipartFile audioFile) {
         String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
         if (email == null) {
             return ResponseEntity.status(401).build();
         }
 
-        Conversation conversation = conversationService.addAudioMessage(conversationService.getConversationByIdAndUser(conversationId, email), audio);
-        return ResponseEntity.ok(conversationService.getLastReplyDTO(conversation));
+        try {
+            Conversation conversation = conversationService.addAudioMessage(conversationService.getConversationByIdAndUser(conversationId, email), audioFile.getBytes() );
+            return ResponseEntity.ok(conversationService.getTranscriptionDTO(conversation));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error: " + e.getMessage());
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/getAudioResponse")
+    public ResponseEntity<AudioDTO> getAudioResponse(@RequestHeader(name = "Authorization") String authToken, @RequestParam Long conversationId) {
+        String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
+        if (email == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        Conversation conversation = conversationService.processQueue(conversationId);
+        return ResponseEntity.ok(conversationService.getAudioDTO(conversation));
     }
 
     /**
@@ -137,13 +155,13 @@ public class ConversationController {
      */
 
     @PostMapping("/startImageConversation")
-    public ResponseEntity<ReplyDTO> startImageConversation(@RequestHeader(name = "Authorization") String authToken, @RequestBody String imageUrl) {
+    public ResponseEntity<ReplyDTO> startImageConversation(@RequestHeader(name = "Authorization") String authToken, @RequestBody String imageBase64) {
         String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
         if (email == null) {
             return ResponseEntity.status(401).build();
         }
 
-        Conversation conversation = conversationService.startImageConversation(userService.getUserByEmail(email), imageUrl);
+        Conversation conversation = conversationService.startImageConversation(userService.getUserByEmail(email), imageBase64);
         ReplyDTO answer = conversationService.getLastReplyDTO(conversation);
         if (conversation.getTitle() != null) {
             answer.setTitle(conversation.getTitle());

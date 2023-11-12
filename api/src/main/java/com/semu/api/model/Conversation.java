@@ -100,6 +100,16 @@ public class Conversation {
         return messages.get(messages.size() - 1);
     }
 
+    public Message getLastUserMessage() {
+        Message lastMessage = messages.get(messages.size() - 1);
+        return lastMessage.isUser() ? lastMessage : messages.get(messages.size() - 2);
+    }
+
+    public Message getLastAssistantMessage() {
+        Message lastMessage = messages.get(messages.size() - 1);
+        return !lastMessage.isUser() ? lastMessage : messages.get(messages.size() - 2);
+    }
+
     @Override
     public String toString() {
         return "Conversation{" +

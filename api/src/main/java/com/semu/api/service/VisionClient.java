@@ -31,7 +31,7 @@ public class VisionClient {
     }
 
 
-    public String analyzeImage(String imageUrl) {
+    public String analyzeImage(String imageBase64) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + apiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -39,7 +39,7 @@ public class VisionClient {
         String prompt = getMathVisionPrompt();
         List<Map<String, Object>> content = new ArrayList<>();
         content.add(Map.of("type", "text", "text", prompt));
-        content.add(Map.of("type", "image_url", "image_url", Map.of("url", "data:image/jpeg;base64," + imageUrl)));
+        content.add(Map.of("type", "image_url", "image_url", Map.of("url", "data:image/jpeg;base64," + imageBase64)));
 
         List<Map<String, Object>> messages = new ArrayList<>();
         messages.add(Map.of("role", "user", "content",  content));

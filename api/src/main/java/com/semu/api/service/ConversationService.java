@@ -2,13 +2,17 @@ package com.semu.api.service;
 
 import com.semu.api.model.*;
 import com.semu.api.repository.ConversationRepository;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ConversationService {
@@ -27,6 +31,39 @@ public class ConversationService {
 
     @Autowired
     private VisionClient visionClient;
+
+    public enum JobState {
+        WAITING,
+        IN_PROGRESS,
+        FINISHED,
+    }
+
+
+    private Map<Long, JobState> conversationQueue = new HashMap<>();
+
+    public boolean isJobComplete(Long id) {
+        System.out.println("Checking if job " + id + " is complete, state: " + conversationQueue.get(id));
+        return conversationQueue.get(id) == JobState.FINISHED;
+    }
+
+
+    public Conversation processQueue(Long id) {
+        try {
+            System.out.println("Processing job " + id + " with state: " + conversationQueue.get(id));
+            Conversation conversation = conversationRepository.findById(id).orElseThrow();
+            if (conversationQueue.get(id) == JobState.WAITING) {
+                conversationQueue.put(id, JobState.IN_PROGRESS);
+                conversation = assistantClient.assist(conversation, Assistants.EstonianAssistant);
+                conversationQueue.put(id, JobState.FINISHED);
+                System.out.println("Finish processing for " + conversation.getId() + " with new state: " + conversationQueue.get(conversation.getId()));
+                return conversationRepository.save(conversation);
+            } else return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error processing job " + id + " with state: " + conversationQueue.get(id));
+            return null;
+        }
+    }
 
     public Conversation addMessageAndAnswer(Conversation conversation, Message message) {
         conversation.addMessage(message);
@@ -59,19 +96,31 @@ public class ConversationService {
     }
 
 
-    public Conversation startAudioConversation(User user, String aiMessage, byte[] audio) {
-        String message = voiceClient.transcribeVoice(audio);
-        return startConversationAndAnswer(user, aiMessage, message, Assistants.EstonianAssistant);
+    public Conversation startAudioConversation(User user, byte[] audio) {
+        String message = voiceClient.transcribeAudio(audio);
+
+        Conversation conversation = new Conversation();
+        conversation.setUser(user);
+        conversation.addMessage(new Message(message, LocalDateTime.now(), true, conversation));
+        conversation = conversationRepository.save(conversation);
+
+        conversationQueue.put(conversation.getId(), JobState.WAITING);
+        System.out.println("Added "+ conversation.getId() + " to queue, state: " + conversationQueue.get(conversation.getId()));
+        return conversation;
     }
 
     public Conversation addAudioMessage(Conversation conversation, byte[] audio) {
-        String message = voiceClient.transcribeVoice(audio);
-        return addMessageAndAnswer(conversation, message);
+        String message = voiceClient.transcribeAudio(audio);
+        conversation.addMessage(new Message(message, LocalDateTime.now(), true, conversation));
+        conversationQueue.put(conversation.getId(), JobState.WAITING);
+        System.out.println("Added "+ conversation.getId() + " to queue, state: " + conversationQueue.get(conversation.getId()));
+        return conversationRepository.save(conversation);
     }
 
 
-    public Conversation startImageConversation(User user, String imageUrl) {
-        String visionResult = visionClient.analyzeImage(imageUrl);
+
+    public Conversation startImageConversation(User user, String imageBase64) {
+        String visionResult = visionClient.analyzeImage(imageBase64);
         return startConversationAndAnswer(user, visionResult, Assistants.MathVisionAssistant);
     }
 
@@ -82,6 +131,18 @@ public class ConversationService {
         // byte[] audio = voiceClient.synthesizeVoice(lastMessage);
         return new ReplyDTO(id, lastMessage, String.valueOf(System.currentTimeMillis()));
     }
+
+    public TranscriptionDTO getTranscriptionDTO(Conversation conversation) {
+        return new TranscriptionDTO(conversation.getId(), conversation.getTitle(), conversation.getLastUserMessage().getContent());
+    }
+
+    public AudioDTO getAudioDTO(Conversation conversation) {
+        String lastMessage = conversation.getLastAssistantMessage().getContent();
+        byte[] audio = voiceClient.synthesizeVoice(lastMessage);
+        return new AudioDTO(lastMessage, audio);
+    }
+
+
 
     public ConversationDTO getConversationDTO(Conversation conversation) {
         List<MessageDTO> messageDTOs = conversation.getMessages().stream().map(message -> new MessageDTO(message.getId(), message.getContent(), message.getTimestamp().toString(), message.isUser())).toList();

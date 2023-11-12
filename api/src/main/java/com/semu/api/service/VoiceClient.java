@@ -1,68 +1,74 @@
 package com.semu.api.service;
 
-import com.google.cloud.speech.v1.*;
-import com.google.protobuf.ByteString;
-import com.semu.api.model.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
 public class VoiceClient {
 
-    private final RestTemplate restTemplate;
+    @Value("${chatgpt.api.key}")
+    private String apiKey;
+
+    @Value("${chatgpt.api.old-url}")
+    private String apiUrl;
 
     @Value("${speech.api.url}")
     private String speechApiUrl;
+
+    private final RestTemplate restTemplate;
 
     @Autowired
     public VoiceClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public String transcribeVoice(byte[] audioBytes) {
-        try (SpeechClient speechClient = SpeechClient.create()) {
-            StringBuilder transcript = new StringBuilder();
-            RecognitionAudio audio = RecognitionAudio.newBuilder()
-                    .setContent(ByteString.copyFrom(audioBytes))
-                    .build();
-            RecognitionConfig config = RecognitionConfig.newBuilder()
-                    .setEncoding(RecognitionConfig.AudioEncoding.FLAC)
-                    .setLanguageCode("et-EE")
-                    .build();
 
-            RecognizeRequest request = RecognizeRequest.newBuilder()
-                    .setConfig(config)
-                    .setAudio(audio)
-                    .build();
+    public String transcribeAudio(byte[] audioFile) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + apiKey);
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-            RecognizeResponse response = speechClient.recognize(request);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("model", "whisper-1");
+        body.add("language", "et");
+        body.add("prompt", "Hei! Mina olen SEMU, sinu virtuaalne abiline. Kuidas saan sind aidata?");
 
-            for (SpeechRecognitionResult result : response.getResultsList()) {
-                SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-                transcript.append(alternative.getTranscript());
+        // Wrap the byte array in a ByteArrayResource for the 'file' part
+        ByteArrayResource fileResource = new ByteArrayResource(audioFile) {
+            @Override
+            public String getFilename() {
+                return "audio.wav"; // You need to provide a filename for the multipart file upload
             }
-            return transcript.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error transcribing voice data:", e);
-        }
+        };
 
+        // Add the ByteArrayResource to the body
+        body.add("file", fileResource);
+
+        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(body, headers);
+        String url = apiUrl + "/audio/transcriptions";
+
+        try {
+            ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
+            Map<String, String> responseBody = response.getBody();
+            assert responseBody != null;
+            System.out.println(responseBody.get("text"));
+            return responseBody.get("text");
+        } catch (Exception e) {
+            throw new RuntimeException("Error calling OpenAI API:", e);
+        }
     }
+
 
     public byte[] synthesizeVoice(String text) {
         HttpHeaders headers = new HttpHeaders();
@@ -77,16 +83,9 @@ public class VoiceClient {
 
         try {
             ResponseEntity<byte[]> response = restTemplate.postForEntity(speechApiUrl, request, byte[].class);
-            saveToFile(response.getBody());
             return response.getBody();
         } catch (Exception e) {
             throw new RuntimeException("Error calling Neurokõne API:", e);
         }
     }
-
-    public void saveToFile(byte[] audioData) throws IOException {
-        Path path = Paths.get("test.wav");  // Change the extension if it's not MP3
-        Files.write(path, audioData);
-    }
-
 }
