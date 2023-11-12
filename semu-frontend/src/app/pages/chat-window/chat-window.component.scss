@@ -255,6 +255,7 @@
     .input-container {
       max-width: 95vw;
       width: 95vw;
+      padding-bottom: (16px, env(safe-area-inset-bottom));
 
       .textbox {
         padding-left: 4px;
