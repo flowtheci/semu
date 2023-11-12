@@ -51,9 +51,10 @@ public class VisionClient {
         body.put("max_tokens", 2000);
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
+        String url = apiUrl + "/chat/completions";
 
         try {
-            ResponseEntity<Map> response = restTemplate.postForEntity(apiUrl, request, Map.class);
+            ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
             Map responseBody = response.getBody();
             List<Map<String, Object>> choices = (List<Map<String, Object>>) responseBody.get("choices");
             Map<String, Object> choice = choices.get(0);
