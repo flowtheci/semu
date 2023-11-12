@@ -53,7 +53,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() conversationIdToLoad: string = '';
 
   messages: Message[] = [];
-  messageIndex = 0;
+  messageIndex = -1;
   isTyping = false;
   userIsTyping = false;
   isRecording = false;
@@ -117,6 +117,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   async ngAfterViewInit(): Promise<void> {
     await this.semuService.getAllConversations().then((response: any) => {
       this.conversationArray = response;
+      this.conversationId = '0';
     });
 
   }
@@ -199,7 +200,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
       this.conversationId = '0';
       this.conversationTitle = '';
       this.messages = [];
-      this.messageIndex = 0;
+      this.messageIndex = -1;
       this.animState = 'in';
   }
 
@@ -253,7 +254,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     await this.animate();
     this.userIsTyping = true;
     const formData = new FormData();
-    const newId = this.messages[this.messages.length - 1].id + 1;
+    const newId = this.messages.length;
     const endpoint = this.hasConversationId ? '/addAudioMessage' : '/startAudioConversation';
     const conversationIdParam = this.hasConversationId ? `?conversationId=${this.conversationId}` : '';
     formData.append('audioMessage', audioFile);
