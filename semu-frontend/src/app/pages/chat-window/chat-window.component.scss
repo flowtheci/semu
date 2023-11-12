@@ -3,6 +3,26 @@
   font-weight: 900;
 }
 
+.background-image {
+  position: relative;
+  top: 45px;
+  width: 300px;
+  height: 100%;
+  align-self: center;
+
+}
+
+.background-image-text {
+  color: #112B53;
+  font-family: Outfit, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  align-self: center;
+  margin: 0;
+}
+
 .subtitle {
   font-family: 'Outfit', sans-serif;
   font-size: 14px;
@@ -68,7 +88,7 @@
     z-index: 1;
     overflow-y: scroll;
     height: auto;
-    -ms-overflow-style: none;  /* IE and Edge */
+    -ms-overflow-style: none;
 
 
 
@@ -80,7 +100,7 @@
     .chat-message-container {
       flex-shrink: 0;
       min-height: 150px;
-      -ms-overflow-style: none;  /* IE and Edge */
+      -ms-overflow-style: none;
       display: flex;
       width: 100%;
       flex-direction: row;
@@ -140,37 +160,49 @@
 }
 
 .input-container {
-  width: 100%;
+  max-width: 53vw;
+  width: 53vw;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 30px;
+  position: absolute;
+  bottom: 0;
+  padding: 12px 1vw;
+  gap: 10px;
+  z-index: 10000000;
+  background-color: #031734;
 }
 
 .textbox {
   width: 90%;
   border-radius: 10px;
-  background: #CED7E0;
-  padding-left: 36px;
+  background: #112B53;
+  padding-left: 12px;
   resize: none;
   height: 32px;
   overflow-y: hidden;
+  border-width: 0;
+  color: #CED7E0;
 
   font-family: 'Outfit', sans-serif;
-  font-size: 20px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
   text-align: left;
 
   &::placeholder {
-    color: #2a2a2a;
+    color: #054569;
     font-family: 'Outfit', sans-serif;
-    font-size: 18px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     text-align: left;
-    vertical-align: center;
     padding-left: 2px;
+  }
+
+  &:focus {
+    outline: none;
   }
 }
 
@@ -220,7 +252,8 @@
     }
 
     .input-container {
-      width: 95%;
+      max-width: 95vw;
+      width: 95vw;
 
       .textbox {
         padding-left: 4px;

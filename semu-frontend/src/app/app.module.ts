@@ -16,6 +16,7 @@ import {JwtModule} from "@auth0/angular-jwt";
 import { ServiceWorkerModule } from '@angular/service-worker';
 import {MathjaxModule} from "mathjax-angular";
 import { VoiceRecorderComponent } from './components/voice-recorder/voice-recorder.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export function tokenGetter() {
   return localStorage.getItem("authToken");
@@ -35,6 +36,7 @@ export function tokenGetter() {
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     MathjaxModule.forRoot({config: {

@@ -169,7 +169,7 @@ export class SemuService {
 
     const lastMessage = prompt[prompt.length - 1].content;
 
-    const isFirstMessage = prompt.length === 2;
+    const isFirstMessage = prompt.length === 1;
     try {
 
       if (isFirstMessage) {

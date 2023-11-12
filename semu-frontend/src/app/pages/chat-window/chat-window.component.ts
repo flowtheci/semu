@@ -13,12 +13,36 @@ import {Message} from 'src/app/model/message';
 import {SemuService} from "../../service/semu.service";
 import {HttpClient} from "@angular/common/http";
 import {backendUrl} from "../../app.component";
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 
 @Component({
   selector: 'app-chat-window',
   templateUrl: './chat-window.component.html',
-  styleUrls: ['./chat-window.component.scss']
+  styleUrls: ['./chat-window.component.scss'],
+  animations: [
+    trigger('flyUpAndAway', [
+      state('in', style({ opacity: 1, transform: 'translateY(0)' })),
+      state('out', style({ opacity: 0, transform: 'translateY(-100%)' })),
+      transition('* => out', [
+        animate('0.5s ease-in')
+      ])
+    ]),
+    trigger('flyUpAndAwayFar', [
+      state('in', style({ opacity: 1, transform: 'translateY(0)' })),
+      state('out', style({ opacity: 0, transform: 'translateY(-900%)' })),
+      transition('* => out', [
+        animate('0.5s ease-in')
+      ])
+    ]),
+    trigger('flyChatBox', [
+      state('out', style({ opacity: 0, transform: 'translateY(-250%)' })),
+      state('in', style({ opacity: 1, transform: 'translateY(0)' })),
+      transition('* => in', [
+        animate('0.5s ease-in')
+      ])
+    ])
+  ]
 })
 export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
 
@@ -44,6 +68,21 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   private maxInterval = 32000;
   private exponentialBackoff = 1.5;
 
+  animState = 'in';
+  chatBoxAnimState = 'out';
+
+  animate() {
+    this.animState = 'out';
+    // Return a promise that resolves after the timeout
+    return new Promise<void>((resolve) => {
+      setTimeout(() => {
+        this.chatBoxAnimState = 'in';
+        resolve(); // Resolve the promise after the timeout
+      }, 500);
+    });
+  }
+
+
   constructor(private semuService: SemuService, private http: HttpClient, private zone: NgZone) {
   }
 
@@ -64,16 +103,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   ngOnInit() {
-    this.messages = [
-      {
-        id: 0,
-        content: 'Hei semu! Mina olen SEMU, Sinu virtuaalne matemaatikaõpetaja. Kui Sul on mõni matemaatiline küsimus või probleem, siis olen siin, et Sind aidata. Koos saame kõigega hakkama! 😊',
-        timestamp: new Date(),
-        isUser: false,
-        hasStartedTyping: false,
-        isTypeable: true,
-      },
-    ];
+    this.messages = [];
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -87,8 +117,6 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   async ngAfterViewInit(): Promise<void> {
     await this.semuService.getAllConversations().then((response: any) => {
       this.conversationArray = response;
-      this.conversationId = this.conversationArray[this.conversationArray.length-1].toString();
-      this.loadConversation();
     });
 
   }
@@ -126,6 +154,10 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   async onSendMessage(message: string, elementRef?: HTMLTextAreaElement, isImage?: boolean): Promise<void> {
+    if (elementRef) {
+      elementRef.value = '';
+    }
+    await this.animate();
     const newId = this.messages.length;
     this.messages.push({
       id: newId,
@@ -137,12 +169,6 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     });
     this.messageIndex++;
     this.isTyping = true;
-
-    if (elementRef) {
-      elementRef.value = '';
-      const event = {target: elementRef};
-      this.adjustTextareaHeight(event)
-    }
 
     const response = this.semuService.responseAsMessage(this.messages, isImage);
     response.then((response: Message) => {
@@ -164,12 +190,6 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     return message.replace(/\s+/g, ' ').trim();
   }
 
-  adjustTextareaHeight(event: any): void {
-    const textarea = event.target;
-    textarea.style.height = 'auto'; // Reset height to auto before calculating the scroll height
-    textarea.style.height = textarea.scrollHeight + 'px';
-  }
-
 
   convoExists(): boolean {
     return this.conversationArray.includes(parseInt(this.conversationId));
@@ -178,17 +198,9 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   createNewConversation(): void {
       this.conversationId = '0';
       this.conversationTitle = '';
-      this.messages = [
-        {
-          id: 0,
-          content: 'Hei ' + this.userName + '! Mina olen SEMU, Sinu virtuaalne matemaatikaõpetaja. Kui Sul on mõni matemaatiline küsimus või probleem, siis olen siin, et Sind aidata. Koos saame kõigega hakkama! 😊',
-          timestamp: new Date(),
-          isUser: false,
-          hasStartedTyping: false,
-          isTypeable: true,
-        },
-      ];
+      this.messages = [];
       this.messageIndex = 0;
+      this.animState = 'in';
   }
 
   onFileSelected(event: any) {
@@ -238,6 +250,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   async sendAudioMessage(audioFile: File) {
+    await this.animate();
     this.userIsTyping = true;
     const formData = new FormData();
     const newId = this.messages[this.messages.length - 1].id + 1;

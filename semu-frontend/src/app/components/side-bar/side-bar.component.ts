@@ -1,10 +1,11 @@
 import {EventEmitter, Output, Component, OnInit} from '@angular/core';
 import {SemuService} from "../../service/semu.service";
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-side-bar',
   templateUrl: './side-bar.component.html',
-  styleUrls: ['./side-bar.component.scss']
+  styleUrls: ['./side-bar.component.scss'],
 })
 export class SideBarComponent implements OnInit {
 

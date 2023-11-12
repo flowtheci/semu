@@ -36,7 +36,7 @@ public class ConversationController {
             return ResponseEntity.status(401).build();
         }
 
-        Conversation conversation = conversationService.startConversationAndAnswer(userService.getUserByEmail(email), messages.get(0), messages.get(1));
+        Conversation conversation = conversationService.startConversationAndAnswer(userService.getUserByEmail(email), messages.get(0), Assistants.MathAssistant);
         ReplyDTO answer = conversationService.getLastReplyDTO(conversation);
         if (conversation.getTitle() != null) {
             answer.setTitle(conversation.getTitle());
