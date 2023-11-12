@@ -1,27 +1,65 @@
-# Semu
+# SEMU Angular Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.5.
+This is the official SEMU Angular frontend. Follow the instructions below to set up and run the frontend of the SEMU application.
 
-## Development server
+## Prerequisites
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Before you begin, make sure you have the following installed:
+- Node.js (which includes npm)
 
-## Code scaffolding
+You can check if you have Node and npm installed by running `node -v` and `npm -v` in the terminal.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Setting Up the Project
 
-## Build
+To set up the project, follow these steps:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+1. Clone the SEMU frontend repository to your local machine using:
+   ```
+   git clone https://github.com/flowtheci/semu/
+   ```
 
-## Running unit tests
+2. Navigate to the project directory:
+   ```
+   cd semu/semu-frontend
+   ```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+3. Install the project dependencies using npm:
+   ```
+   npm install --legacy-peer-deps
+   ```
 
-## Running end-to-end tests
+   The `--legacy-peer-deps` flag is used to avoid conflicts with peer dependency management in npm versions 7 or later.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Running the Frontend
 
-## Further help
+To run the Angular frontend on your local machine, use the Angular CLI command:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```
+ng serve
+```
+
+This will compile the application and serve it by default on `http://localhost:4200`. Open your browser and navigate to this URL to view the application.
+
+## Configuration
+
+The frontend API URL can be changed in the `app.component.ts` file. Locate the following line of code and set to true to enable local backend hosting.
+
+```
+export const backendUrl = false ? 'http://localhost:8080/api/' : 'https://tribal-saga-397814.lm.r.appspot.com/api/';
+```
+
+Make sure to replace `http://your-backend-url-here/api` with the actual URL of your backend service.
+
+## Building for Production
+
+To build the application, run the following command:
+
+```
+ng build
+```
+
+This will create a `dist/` folder with the compiled assets optimized for production.
+
+## Further Help
+
+To get more help on the Angular CLI, use `ng help` or check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
