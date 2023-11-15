@@ -14,6 +14,7 @@ import {SemuService} from "../../service/semu.service";
 import {HttpClient} from "@angular/common/http";
 import {backendUrl} from "../../app.component";
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import * as RecordRTC from 'recordrtc';
 
 
 @Component({
@@ -62,7 +63,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   conversationTitle: string = '';
   conversationArray: number[] = [];
 
-  private mediaRecorder: MediaRecorder | null = null;
+  private recordRTC: RecordRTC | undefined;
   private audioChunks: Blob[] = [];
   private pollInterval = 125;
   private maxInterval = 32000;
@@ -223,27 +224,20 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   async startRecording() {
     this.isRecording = true;
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    this.mediaRecorder = new MediaRecorder(stream);
-    this.mediaRecorder.ondataavailable = e => {
-      this.audioChunks.push(e.data);
-    };
-    this.mediaRecorder.start();
+    this.recordRTC = new RecordRTC(stream, { type: 'audio' });
+    this.recordRTC.startRecording();
   }
 
-  stopRecording() {
+  async stopRecording() {
     this.isRecording = false;
-    if (!this.mediaRecorder) return;
-    this.mediaRecorder.stop();
-    this.mediaRecorder.onstop = async () => {
-      const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
-      this.audioChunks = [];
-      const audioFile = new File([audioBlob], 'message.wav', { type: 'audio/wav' });
-      this.isRecording = false;
-      console.warn(audioFile);
-      this.zone.run(() => {
-        this.sendAudioMessage(audioFile);
-      });
-    };
+    this.recordRTC?.stopRecording(async () => {
+      let blob = this.recordRTC?.getBlob();
+      if (blob != undefined!) {
+        this.zone.run(() => {
+          this.sendAudioMessage(new File([blob as BlobPart], 'message.wav', { type: 'audio/wav' }));
+        });
+      }
+    });
   }
 
   toggleRecording() {

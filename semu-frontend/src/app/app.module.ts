@@ -43,8 +43,12 @@ export function tokenGetter() {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']]
       },
+      "HTML-CSS": {
+        linebreaks: { automatic: true }
+      },
       svg: {
-        fontCache: 'global'
+        fontCache: 'global',
+        linebreaks: { automatic: true }
       }
     }}),
     JwtModule.forRoot({
