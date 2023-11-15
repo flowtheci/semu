@@ -232,11 +232,10 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     this.isRecording = false;
     this.recordRTC?.stopRecording(async () => {
       let blob = this.recordRTC?.getBlob();
-      if (blob != undefined!) {
-        this.zone.run(() => {
-          this.sendAudioMessage(new File([blob as BlobPart], 'message.wav', { type: 'audio/wav' }));
-        });
-      }
+      this.zone.run(() => {
+        if (blob == undefined) return;
+        this.sendAudioMessage(new File([blob], 'message.wav', { type: 'audio/wav' }));
+      });
     });
   }
 
