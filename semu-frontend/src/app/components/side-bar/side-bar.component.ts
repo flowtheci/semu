@@ -39,6 +39,9 @@ export class SideBarComponent implements OnInit {
     this.isOpenChange.emit(this.isOpen);
   }
 
+  isIOS(): boolean {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+  }
 
   select(selection: SubMenu) {
     if (this.selectedSubMenu === selection) {
