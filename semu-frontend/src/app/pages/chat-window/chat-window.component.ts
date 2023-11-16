@@ -123,15 +123,19 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   async ngAfterViewInit(): Promise<void> {
-    const safeAreaInsetBottom = this.elRef.nativeElement.querySelector('#safe-area-inset-bottom').offsetHeight;
-    const inputContainer = this.elRef.nativeElement.querySelector('.input-container');
-    this.renderer.setStyle(inputContainer, 'padding-bottom', `${safeAreaInsetBottom}px`);
-    
+    if (this.isIOS()) {
+      const inputContainer = this.elRef.nativeElement.querySelector('.input-container');
+      this.renderer.setStyle(inputContainer, 'padding-bottom', '50px'); // Adjust this value as needed
+    }
+
     await this.semuService.getAllConversations().then((response: any) => {
       this.conversationArray = response;
       this.conversationId = '0';
     });
+  }
 
+  isIOS(): boolean {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
   }
 
   async loadConversation(): Promise<void> {
