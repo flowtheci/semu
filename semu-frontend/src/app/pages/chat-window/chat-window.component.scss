@@ -159,6 +159,10 @@
   }
 }
 
+#safe-area-inset-bottom {
+    height: env(safe-area-inset-bottom);
+}
+
 .input-container {
   max-width: 53vw;
   width: 53vw;

@@ -6,6 +6,7 @@ import {
   NgZone,
   OnChanges,
   OnInit,
+  Renderer2,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
@@ -84,7 +85,13 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
 
-  constructor(private semuService: SemuService, private http: HttpClient, private zone: NgZone) {
+  constructor(
+    private semuService: SemuService, 
+    private http: HttpClient, 
+    private zone: NgZone,
+    private elRef: ElementRef, 
+    private renderer: Renderer2
+    ) {
   }
 
   get userName() {
@@ -116,6 +123,10 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   async ngAfterViewInit(): Promise<void> {
+    const safeAreaInsetBottom = this.elRef.nativeElement.querySelector('#safe-area-inset-bottom').offsetHeight;
+    const inputContainer = this.elRef.nativeElement.querySelector('.input-container');
+    this.renderer.setStyle(inputContainer, 'padding-bottom', `${safeAreaInsetBottom}px`);
+    
     await this.semuService.getAllConversations().then((response: any) => {
       this.conversationArray = response;
       this.conversationId = '0';
