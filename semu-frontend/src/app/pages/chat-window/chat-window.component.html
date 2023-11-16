@@ -1,4 +1,4 @@
-<div class="chat-container" [class.open]="isOpen">
+<div class="chat-container" [class.open]="isOpen" [class.safe-area]="isIOS()">
   <div class="chat-title">Matemaatika
     <p *ngIf="hasConversationId" class="subtitle">{{conversationTitle}}</p>
   </div>

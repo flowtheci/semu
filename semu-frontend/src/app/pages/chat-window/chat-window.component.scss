@@ -249,6 +249,10 @@
     border-radius: 20px 20px 0 0;
     box-shadow: none;
 
+    &.safe-area {
+      margin-bottom: 1vh;
+    }
+
     &.open {
       margin-left: 200vw;
     }
@@ -258,7 +262,7 @@
       width: 95vw;
 
       &.safe-area {
-        margin-bottom: 0.75vh;
+        margin-bottom: 1vh;
       }
 
       .textbox {
