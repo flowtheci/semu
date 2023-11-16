@@ -168,7 +168,7 @@
   margin-top: 30px;
   position: absolute;
   bottom: 0;
-  padding: 12px 1vw max(16px, env(safe-area-inset-bottom));
+  padding: 12px 1vw calc(16px + env(safe-area-inset-bottom))  !important;
 
   gap: 10px;
   z-index: 10000000;
@@ -255,6 +255,7 @@
     .input-container {
       max-width: 95vw;
       width: 95vw;
+      padding: 12px 1vw calc(16px + env(safe-area-inset-bottom))  !important;
 
       .textbox {
         padding-left: 4px;
@@ -330,5 +331,3 @@
     transform: translate(24px, 0);
   }
 }
-
-
