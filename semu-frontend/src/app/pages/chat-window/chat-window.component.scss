@@ -159,9 +159,6 @@
   }
 }
 
-#safe-area-inset-bottom {
-    height: env(safe-area-inset-bottom);
-}
 
 .input-container {
   max-width: 53vw;
@@ -172,7 +169,7 @@
   margin-top: 30px;
   position: absolute;
   bottom: 0;
-  padding: 12px 1vw calc(16px + env(safe-area-inset-bottom))  !important;
+  padding: 12px 1vw 16px;
 
   gap: 10px;
   z-index: 10000000;
@@ -259,7 +256,10 @@
     .input-container {
       max-width: 95vw;
       width: 95vw;
-      padding: 12px 1vw calc(16px + env(safe-area-inset-bottom))  !important;
+
+      &.safe-area {
+        margin-bottom: 0.75vh;
+      }
 
       .textbox {
         padding-left: 4px;
