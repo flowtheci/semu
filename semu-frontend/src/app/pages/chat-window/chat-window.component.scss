@@ -240,12 +240,16 @@
 }
 
 .user-image {
-  width: 80%;
+  width: 400px;
   align-self: center;
   border-radius: 20px;
 }
 
 @media (max-width: 767px) {
+  .user-image {
+    width: 80%;
+  }
+
   .assistant-icon {
     img {
       width: 36px;

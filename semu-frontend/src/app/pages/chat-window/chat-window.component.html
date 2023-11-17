@@ -23,7 +23,7 @@
     </svg>
     <h1 [@flyUpAndAwayFar]="animState" *ngIf="this.messages.length === 0" class="background-image-text">Hei! Kuidas saan sind täna aidata?</h1>
     <div class="chat-message-container" [class.image]="message.isImage" [class.assistant]="!message.isUser" *ngFor="let message of messages">
-      <div *ngIf="message.isUser && !isMobile" class="user-icon">
+      <div *ngIf="message.isUser && !isMobile && !message.isImage" class="user-icon">
         <svg width="75" height="75" viewBox="0 0 75 75" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="37.5" cy="37.5" r="37.5" fill="#D9D9D9"/>
           <path d="M18.46 48V27.18H21.28V48H18.46ZM31.9 48V27.18H34.72V48H31.9ZM20.38 38.52V35.94H32.59V38.52H20.38ZM52.5116 48L42.0116 37.14L52.3016 27.18H55.9616L44.8616 37.86V36.3L56.2616 48H52.5116ZM39.6416 48V27.18H42.4616V48H39.6416Z" fill="black"/>
