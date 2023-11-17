@@ -120,6 +120,10 @@
       padding: 15px 0;
       background-color: #031734;
 
+      &.image {
+        justify-content: center;
+      }
+
       app-typewriter {
         padding: 15px 5px;
       }
@@ -235,6 +239,12 @@
   animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 
+.user-image {
+  width: 80%;
+  align-self: center;
+  border-radius: 20px;
+}
+
 @media (max-width: 767px) {
   .assistant-icon {
     img {
@@ -305,6 +315,15 @@
       font-style: normal;
       font-weight: 200;
     }
+  }
+
+  .background-image {
+    width: 60vw;
+    padding-bottom: 15px;
+  }
+  .background-image-text {
+    width: 80vw;
+    text-align: center;
   }
 }
 
