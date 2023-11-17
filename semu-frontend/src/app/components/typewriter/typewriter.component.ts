@@ -37,6 +37,10 @@ export class TypewriterComponent implements OnInit, OnChanges {
     });
   }
 
+  get isMobile(): boolean {
+    return window.innerWidth <= 768;
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (this.startTyping && !this.message?.hasStartedTyping) {
       setTimeout(() => {
@@ -73,7 +77,6 @@ export class TypewriterComponent implements OnInit, OnChanges {
 
 
   scrollOnType() {
-    this.textContainerElement.nativeElement.scrollIntoView(true);
   }
 
 

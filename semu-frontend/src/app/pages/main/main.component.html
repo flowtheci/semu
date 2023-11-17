@@ -1,7 +1,6 @@
 <div class="container">
   <app-side-bar (isOpenChange)="openToggled($event)"></app-side-bar>
   <div [class.none]="_sidebarOpen" class="left-shadow"></div>
-  <app-logo *ngIf="isMobile"></app-logo>
   <app-chat-window [conversationIdToLoad]="selectedConversationId" [isOpen]="_sidebarOpen"></app-chat-window>
   <div class="right-shadow"></div>
 </div>

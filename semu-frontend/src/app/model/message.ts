@@ -6,4 +6,5 @@ export interface Message {
   hasStartedTyping: boolean;
   isTypeable: boolean;
   fast?: boolean;
+  isImage?: boolean;
 }

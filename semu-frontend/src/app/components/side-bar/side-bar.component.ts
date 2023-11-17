@@ -31,7 +31,11 @@ export class SideBarComponent implements OnInit {
 
   selectConversation(conversationId: string) {
     console.warn('selecting: ' + conversationId);
-    this.semuService.selectedConversation = conversationId;
+    this.isOpen = false;
+    this.isOpenChange.emit(this.isOpen);
+    setTimeout(() => {
+      this.semuService.selectedConversation = conversationId;
+    }, 300);
   }
 
   toggleSideBar(): void {

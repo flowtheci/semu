@@ -6,7 +6,6 @@ import {
   NgZone,
   OnChanges,
   OnInit,
-  Renderer2,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
@@ -14,7 +13,7 @@ import {Message} from 'src/app/model/message';
 import {SemuService} from "../../service/semu.service";
 import {HttpClient} from "@angular/common/http";
 import {backendUrl} from "../../app.component";
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import * as RecordRTC from 'recordrtc';
 
 
@@ -38,8 +37,8 @@ import * as RecordRTC from 'recordrtc';
       ])
     ]),
     trigger('flyChatBox', [
-      state('out', style({ opacity: 0, transform: 'translateY(-250%)' })),
-      state('in', style({ opacity: 1, transform: 'translateY(0)' })),
+      state('out', style({ opacity: 0, transform: 'translateX(-50%) translateY(100%)' })),
+      state('in', style({ opacity: 1, transform: 'translateX(-50%) translateY(0)' })),
       transition('* => in', [
         animate('0.5s ease-in')
       ])
@@ -48,8 +47,8 @@ import * as RecordRTC from 'recordrtc';
 })
 export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
 
-  @ViewChild('messageBox') chatWindowElement!: HTMLElement;
-  @ViewChild('typingNotification') typingNotification!: HTMLElement;
+  @ViewChild('messageBox', {read: ElementRef}) chatWindowElement: ElementRef<any> | undefined;
+  @ViewChild('bottomAnchor') bottomAnchor!: HTMLElement;
   @ViewChild('fileInput') fileInput!: ElementRef;
   @Input() isOpen = false;
   @Input() conversationIdToLoad: string = '';
@@ -63,22 +62,25 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   conversationId: string = '0'
   conversationTitle: string = '';
   conversationArray: number[] = [];
+  scrollTop = 0;
 
   private recordRTC: RecordRTC | undefined;
   private audioChunks: Blob[] = [];
   private pollInterval = 125;
   private maxInterval = 32000;
   private exponentialBackoff = 1.5;
+  userLabel = '<span class="label">Sina\n</span>';
+  assistantLabel = '<span class="label">SEMU\n</span>';
 
   animState = 'in';
   chatBoxAnimState = 'out';
 
   animate() {
     this.animState = 'out';
+    this.chatBoxAnimState = 'in';
     // Return a promise that resolves after the timeout
     return new Promise<void>((resolve) => {
       setTimeout(() => {
-        this.chatBoxAnimState = 'in';
         resolve(); // Resolve the promise after the timeout
       }, 500);
     });
@@ -86,11 +88,9 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
 
 
   constructor(
-    private semuService: SemuService, 
-    private http: HttpClient, 
+    private semuService: SemuService,
+    private http: HttpClient,
     private zone: NgZone,
-    private elRef: ElementRef, 
-    private renderer: Renderer2
     ) {
   }
 
@@ -123,11 +123,6 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   async ngAfterViewInit(): Promise<void> {
-    if (this.isIOS()) {
-      const inputContainer = this.elRef.nativeElement.querySelector('.input-container');
-      this.renderer.setStyle(inputContainer, 'padding-bottom', '50px'); // Adjust this value as needed
-    }
-
     await this.semuService.getAllConversations().then((response: any) => {
       this.conversationArray = response;
       this.conversationId = '0';
@@ -141,6 +136,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   async loadConversation(): Promise<void> {
     const conversation: Promise<object> = this.semuService.getConversationById(this.conversationId);
     conversation.then((response: any) => {
+      this.chatBoxAnimState = 'in';
       this.conversationTitle = response.title;
       this.conversationId = response.conversationId;
       this.messages = response.messages.map((message: any) => {
@@ -150,14 +146,22 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
           timestamp: new Date(message.timestamp),
           isUser: message.user,
           hasStartedTyping: false,
-          isTypeable: response.messages.indexOf(message) === response.messages.length - 1,
-          fast: response.messages.indexOf(message) === response.messages.length - 1,
+          isTypeable: false,
+          fast: false,
         };
       });
       console.warn(this.messages);
       this.semuService.setLastConversationId(this.conversationId);
       this.messageIndex = this.messages.length-1;
+      this.scroll();
     });
+  }
+
+  scroll() {
+    this.scrollTop = (this.chatWindowElement?.nativeElement.scrollHeight - this.chatWindowElement?.nativeElement.clientHeight + 100) || 0;
+    setTimeout(() => {
+      this.scrollTop = (this.chatWindowElement?.nativeElement.scrollHeight - this.chatWindowElement?.nativeElement.clientHeight + 100) || 0;
+    }, 100);
   }
 
   onTypingFinished(): void {
@@ -165,9 +169,12 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
       this.messageIndex++;
     } else {
       if (this.messages.length % 2 === 0) {
-        this.typingNotification.scrollIntoView(false);
       }
     }
+  }
+
+  get isMobile(): boolean {
+    return window.innerWidth <= 768;
   }
 
   async onSendMessage(message: string, elementRef?: HTMLTextAreaElement, isImage?: boolean): Promise<void> {
@@ -183,15 +190,19 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
       isUser: true,
       hasStartedTyping: false,
       isTypeable: false,
+      isImage: isImage,
     });
     this.messageIndex++;
     this.isTyping = true;
+    this.scroll();
+
 
     const response = this.semuService.responseAsMessage(this.messages, isImage);
     response.then((response: Message) => {
       this.isTyping = false;
       this.messages.push(response);
       this.messageIndex++;
+      this.scroll();
       this.semuService.playLastAudio();
       if (this.conversationTitle === '') {
         this.conversationId = this.semuService.getLastConversationId();
@@ -218,6 +229,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
       this.messages = [];
       this.messageIndex = -1;
       this.animState = 'in';
+      this.chatBoxAnimState = 'out';
   }
 
   onFileSelected(event: any) {

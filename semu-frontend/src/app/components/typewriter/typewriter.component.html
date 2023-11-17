@@ -1,1 +1,2 @@
-<div class="text-container" [mathjax]="displayText" #textContainer></div><span #blinkingCursor id="blinking-cursor" class="blinking-cursor">|</span>
+<div *ngIf="isMobile" class="label">SEMU</div>
+<div class="text-container" [mathjax]="displayText" #textContainer><span #blinkingCursor id="blinking-cursor" class="blinking-cursor">|</span></div>
