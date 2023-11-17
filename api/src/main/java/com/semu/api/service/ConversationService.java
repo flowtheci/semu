@@ -65,14 +65,18 @@ public class ConversationService {
         }
     }
 
-    public Conversation addMessageAndAnswer(Conversation conversation, Message message) {
+    public Conversation addMessageAndAnswer(Conversation conversation, Message message, Assistants prompt) {
         conversation.addMessage(message);
-        conversation = assistantClient.assist(conversation);
+        conversation = assistantClient.assist(conversation, prompt);
         return conversationRepository.save(conversation);
     }
 
     public Conversation addMessageAndAnswer(Conversation conversation, String message) {
-        return addMessageAndAnswer(conversation, new Message(message, LocalDateTime.now(), true, conversation));
+        return addMessageAndAnswer(conversation, new Message(message, LocalDateTime.now(), true, conversation), Assistants.MathAssistant);
+    }
+
+    public Conversation addMessageAndAnswer(Conversation conversation, String message, Assistants prompt) {
+        return addMessageAndAnswer(conversation, new Message(message, LocalDateTime.now(), true, conversation), prompt);
     }
 
     public Conversation startConversationAndAnswer(User user, String userMessage, Assistants prompt) {
@@ -122,6 +126,13 @@ public class ConversationService {
     public Conversation startImageConversation(User user, String imageBase64) {
         String visionResult = visionClient.analyzeImage(imageBase64);
         return startConversationAndAnswer(user, visionResult, Assistants.MathVisionAssistant);
+    }
+
+
+
+    public Conversation addImageMessage(Conversation conversation, String imageBase64) {
+        String visionResult = visionClient.analyzeImage(imageBase64);
+        return addMessageAndAnswer(conversation, visionResult, Assistants.MathVisionAssistant);
     }
 
 

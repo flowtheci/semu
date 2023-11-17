@@ -169,5 +169,23 @@ public class ConversationController {
         return ResponseEntity.ok(answer);
     }
 
+    @PostMapping("/addImageMessage")
+    public ResponseEntity<ReplyDTO> addImageMessage(@RequestHeader(name = "Authorization") String authToken,
+                                                    @RequestParam Long conversationId,
+                                                    @RequestBody String imageBase64)
+    {
+        String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
+        if (email == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        Conversation conversation = conversationService.addImageMessage(conversationService.getConversationByIdAndUser(conversationId, email), imageBase64);
+        ReplyDTO answer = conversationService.getLastReplyDTO(conversation);
+        if (conversation.getTitle() != null) {
+            answer.setTitle(conversation.getTitle());
+        }
+        return ResponseEntity.ok(answer);
+    }
+
 
 }

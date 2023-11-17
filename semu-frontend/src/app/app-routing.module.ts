@@ -7,9 +7,9 @@ import {UserSetupComponent} from "./components/user-setup/user-setup.component";
 
 const routes: Routes = [
   {path: 'log-in', component: LogInComponent},
-  {path: 'home', component: MainComponent, canActivate: [FirstVisitGuard]},
+  {path: 'home', component: MainComponent},
   {path: 'setup', component: UserSetupComponent, canActivate: [FirstVisitGuard]},
-  {path: '', redirectTo: '/log-in', pathMatch: 'full'},
+  {path: '', redirectTo: '/home', pathMatch: 'full'},
 ];
 
 @NgModule({

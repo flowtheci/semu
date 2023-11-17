@@ -130,7 +130,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   isIOS(): boolean {
-    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    return false;
   }
 
   async loadConversation(): Promise<void> {
