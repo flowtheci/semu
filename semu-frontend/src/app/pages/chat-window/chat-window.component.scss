@@ -276,6 +276,9 @@
       width: 95vw;
       padding: 12px 2.5vw max(16px, env(safe-area-inset-bottom));
 
+      &.safe-area {
+        padding-bottom: 11vh;
+      }
     }
 
     .chat-messages {
