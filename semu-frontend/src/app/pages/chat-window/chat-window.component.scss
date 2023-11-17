@@ -274,7 +274,8 @@
     .input-container {
       max-width: 95vw;
       width: 95vw;
-      padding: 12px 2.5vw max(16px, env(safe-area-inset-bottom));
+      padding: 12px 2.5vw 0;
+      margin-bottom: max(16px, env(safe-area-inset-bottom));
 
       &.safe-area {
         padding-bottom: 11vh;
