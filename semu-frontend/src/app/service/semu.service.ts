@@ -185,7 +185,7 @@ export class SemuService {
           return response.lastMessage;
         });
       } else {
-        const response = this.http.post(backendUrl + 'conversations/addMessage?conversationId=' + this.getLastConversationId(), finalMessages[finalMessages.length-1], {headers});
+        const response = this.http.post(backendUrl + 'conversations/add' + (isImage ? 'Image' : '') + 'Message?conversationId=' + this.getLastConversationId(), finalMessages[finalMessages.length-1], {headers});
         return response.toPromise().then((response: any) => {
           this._lastConversationId = response.id;
           this._lastTitle = response.title;
