@@ -72,12 +72,12 @@ public class VisionClient {
     public static String getMathVisionPrompt() {
         return "Palun tuvastage ja kirjeldage pildil esitatud matemaatilisi elemente. Kui pildil on matemaatilised ülesanded" +
                 " või valemid, palun teisendage need LaTeX formaati. Kui tegemist on teooriaküsimustega, palun kirjeldage" +
-                " küsimuse sisu ja konteksti. Tekstülesannete puhul palun kirjutage välja kogu ülesande tekst. Graafide" +
+                " küsimuse sisu ja konteksti. Tekstülesannete puhul palun kirjutage välja kogu relevantne ülesande tekst. Graafide" +
                 " korral palun esitage graafiku pealkiri, telgede kirjeldus, oluliste punktide asukohad ja funktsiooni" +
                 " või andmete iseloomustus. Kui pildil on mitu matemaatilist elementi, palun esitage igaühe kohta eraldi" +
                 " kirjeldus järjekorras, milles need pildil esinevad. Kui pilt koosneb vaid matemaatilistest elementidest," +
-                " siis ära kirjelda pilti, vaid vasta vaid LaTeX kujul matemaatilise tehtega. Alusta oma vastust sõnadega " +
-                " \"Pildil on ...\".";
+                " siis ära kirjelda pilti, vaid vasta vaid LaTeX kujul matemaatilise tehtega. Alusta oma vastust sõnadega 'Kasutaja pildi kirjeldus:'"+
+                ". Ära mingil juhul ülesannet lahenda - sinu töö on vaid pildi kirjeldamine.";
 
     }
 }
