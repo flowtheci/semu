@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 
-export const backendUrl = false ? 'http://localhost:8080/api/' : 'https://tribal-saga-397814.lm.r.appspot.com/api/';
+
+export const devMode = false;
+export const backendUrl = devMode ? 'http://localhost:8080/api/' : 'https://tribal-saga-397814.lm.r.appspot.com/api/';
 
 @Component({
   selector: 'app-root',

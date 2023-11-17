@@ -282,7 +282,7 @@
     }
 
     .chat-messages {
-      padding-bottom: max(25px, env(safe-area-inset-bottom));
+      margin-bottom: max(12px, env(safe-area-inset-bottom));
 
       .chat-message-container {
         width: 100%;
