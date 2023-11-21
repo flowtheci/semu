@@ -57,7 +57,14 @@
       </div>
     </div>
   </div>
-  <div class="input-container">
+  <div class="rate-limit-warning" *ngIf="_rateLimited">
+    <div>
+      <img src="assets/icons/warning.svg">
+      <p>SEMU sõnumite limiit ületatud</p>
+    </div>
+    <h1>{{countdown}}</h1>
+  </div>
+  <div [@inputFlyDown]="inputboxAnimState" class="input-container">
     <svg (click)="createNewConversation()" width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M12.375 16.5H20.625" stroke="#CED7E0" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M16.5 12.375V20.625" stroke="#CED7E0" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>

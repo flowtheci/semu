@@ -32,6 +32,48 @@
   margin: 0;
 }
 
+.rate-limit-warning {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: max(16px, env(safe-area-inset-bottom));
+
+  h1 {
+    margin: 5px 0 0 0;
+    font-family: Outfit, sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-align: center;
+    color: #F4f4f4;
+  }
+
+  div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 7.5px;
+
+    img {
+      width: 24px;
+    }
+
+    p {
+      text-wrap: none;
+      font-family: Outfit, sans-serif;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 400;
+      color: #F4f4f4;
+      margin: 0;
+    }
+  }
+}
+
 .subtitle {
   font-family: 'Outfit', sans-serif;
   font-size: 14px;

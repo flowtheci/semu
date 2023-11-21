@@ -15,6 +15,7 @@ import {HttpClient} from "@angular/common/http";
 import {backendUrl} from "../../app.component";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import * as RecordRTC from 'recordrtc';
+import {AuthService} from "../../service/auth.service";
 
 
 @Component({
@@ -42,7 +43,14 @@ import * as RecordRTC from 'recordrtc';
       transition('* => in', [
         animate('0.5s ease-in')
       ])
-    ])
+    ]),
+    trigger('inputFlyDown', [
+      state('in', style({ opacity: 1, transform: 'translateY(0)' })),
+      state('out', style({ opacity: 0, transform: 'translateY(200%)' })),
+      transition('in => out', [
+        animate('0.5s 0.5s ease-in-out')
+      ]),
+    ]),
   ]
 })
 export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
@@ -59,9 +67,12 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   userIsTyping = false;
   isRecording = false;
 
+  _rateLimited = false;
+
   conversationId: string = '0'
   conversationTitle: string = '';
   conversationArray: number[] = [];
+  countdown: string = '';
   scrollTop = 0;
 
   private recordRTC: RecordRTC | undefined;
@@ -91,7 +102,12 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     private semuService: SemuService,
     private http: HttpClient,
     private zone: NgZone,
+    private authService: AuthService,
     ) {
+  }
+
+  get inputboxAnimState() {
+    return this._rateLimited ? 'out' : 'in';
   }
 
   get userName() {
@@ -110,6 +126,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     return this.conversationArray.indexOf(parseInt(this.conversationId)) < this.conversationArray.length-1;
   }
 
+
   ngOnInit() {
     this.messages = [];
   }
@@ -127,7 +144,35 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
       this.conversationArray = response;
       this.conversationId = '0';
     });
+    if (this.authService.getRateLimit() != '') {
+      const countdownDate = new Date(this.authService.getRateLimit()).getTime();
+      const now = new Date().getTime();
+      const distance = countdownDate - now;
+      if (distance > 0) {
+        this._rateLimited = true;
+        this.startCountdownLoop(countdownDate);
+      } else {
+        this._rateLimited = false;
+        this.authService.deleteRateLimit();
+      }
+    }
   }
+
+  startCountdownLoop(countdownTime: number) {
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = countdownTime - now;
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000) + 1;
+      this.countdown = (hours ? (hours +'h ') : '') + minutes + 'm ' + seconds + 's ';
+      if (distance <= 0) {
+        clearInterval(interval);
+        this.countdown = '';
+      }
+    }, 1000);
+  }
+
 
   isIOS(): boolean {
     return false;
@@ -210,6 +255,12 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
       }
       if (!this.conversationArray.includes(parseInt(this.conversationId))) {
         this.conversationArray.push(parseInt(this.conversationId));
+      }
+
+      if (this.semuService._lastConversationReachedLimit) {
+        this._rateLimited = true;
+        this.authService.saveRateLimit(this.semuService._lastRateLimit);
+        this.startCountdownLoop(new Date(this.authService.getRateLimit()).getTime());
       }
     });
   }

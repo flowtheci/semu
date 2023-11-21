@@ -13,6 +13,8 @@ export class SemuService {
 
   _lastConversationId: string = '';
   _lastTitle: string = '';
+  _lastConversationReachedLimit = false;
+  _lastRateLimit = '';
   _lastAudioUrl: string = '';
   _loading: boolean = false;
 
@@ -171,32 +173,34 @@ export class SemuService {
 
     const isFirstMessage = prompt.length === 1;
     try {
+      const response = isFirstMessage
+        ? this.http.post(backendUrl + 'conversations/start' + (isImage ? 'Image' : '') + 'Conversation',
+          isImage ? lastMessage : finalMessages, {headers})
+        : this.http.post(backendUrl + 'conversations/add' + (isImage ? 'Image' : '') + 'Message?conversationId=' + this.getLastConversationId(),
+          finalMessages[finalMessages.length-1], {headers});
 
-      if (isFirstMessage) {
-        const response = this.http.post(backendUrl + 'conversations/start' + (isImage ? 'Image' : '') + 'Conversation', isImage ? lastMessage : finalMessages, {headers});
-        return response.toPromise().then((response: any) => {
-          this._lastConversationId = response.id;
-          this._lastTitle = response.title;
-          if (response?.audio) {
-            this.storeAudio(response.audio);
-          } else {
-            this._lastAudioUrl = '';
+      return response.toPromise().then((response: any) => {
+        this._lastConversationId = response.id;
+        this._lastTitle = response.title;
+        this._lastConversationReachedLimit = false;
+        if (response?.audio) {
+          this.storeAudio(response.audio);
+        } else {
+          this._lastAudioUrl = '';
+        }
+        return response.lastMessage;
+      },
+        (error) => {
+          if (error.status === 423) {
+            console.warn('User rate limited');
+            console.warn(error);
+            this._lastConversationId = error.error.id;
+            this._lastConversationReachedLimit = true;
+            this._lastRateLimit = error.error.lastMessageTimestamp;
+            return error.error.lastMessage;
           }
-          return response.lastMessage;
         });
-      } else {
-        const response = this.http.post(backendUrl + 'conversations/add' + (isImage ? 'Image' : '') + 'Message?conversationId=' + this.getLastConversationId(), finalMessages[finalMessages.length-1], {headers});
-        return response.toPromise().then((response: any) => {
-          this._lastConversationId = response.id;
-          this._lastTitle = response.title;
-          if (response?.audio) {
-            this.storeAudio(response.audio);
-          } else {
-            this._lastAudioUrl = '';
-          }
-          return response.lastMessage;
-        });
-      }
+
     } catch (error) {
       console.error('Error calling backend API:', error);
       throw error;

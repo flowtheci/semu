@@ -51,6 +51,11 @@ public class ConversationController {
             return ResponseEntity.status(401).build();
         }
 
+        if (!userService.userCanSendMessage(email)) {
+            ReplyDTO errorReply = conversationService.getErrorDTO(email, conversationId);
+            return ResponseEntity.status(423).body(errorReply);
+        }
+
         Conversation conversation = conversationService.addMessageAndAnswer(conversationService.getConversationByIdAndUser(conversationId, email), message);
         return ResponseEntity.ok(conversationService.getLastReplyDTO(conversation));
     }

@@ -3,7 +3,7 @@ import {ViewportScroller} from "@angular/common";
 import {NavigationEnd, Router} from "@angular/router";
 
 
-export const devMode = false;
+export const devMode = true;
 export const backendUrl = devMode ? 'http://localhost:8080/api/' : 'https://tribal-saga-397814.lm.r.appspot.com/api/';
 
 @Component({

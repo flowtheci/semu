@@ -3,10 +3,12 @@ package com.semu.api.service;
 import com.semu.api.model.AuthDTO;
 import com.semu.api.model.User;
 import com.semu.api.repository.UserRepository;
+import jnr.constants.platform.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -29,6 +31,30 @@ public class UserService {
             return user;
         }
         return null;
+    }
+
+    public boolean userCanSendMessage(String userEmail) {
+        User user = getUserByEmail(userEmail);
+        if (user.isAdministrator()) return true; //admin saab alati saata
+        if (user.getResetTime() == null || LocalDateTime.now().isAfter(user.getResetTime())) { // aeg on möödas, reset kasutaja limiidile
+            user.setMessageCount(1);
+            user.setResetTime(LocalDateTime.now().plusHours(3));
+            userRepository.save(user);
+            return true;
+        } else {
+            if (user.getMessageCount() >= 15) {
+                return false;
+            } else {
+                user.setMessageCount(user.getMessageCount() + 1);
+                userRepository.save(user);
+                return true;
+            }
+        }
+    }
+
+    public LocalDateTime getUserResetTime(String userEmail) {
+        User user = getUserByEmail(userEmail);
+        return user.getResetTime();
     }
 
     public AuthDTO wrapJwtToken(String token) {

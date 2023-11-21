@@ -135,6 +135,15 @@ public class ConversationService {
         return addMessageAndAnswer(conversation, visionResult, Assistants.MathVisionAssistant);
     }
 
+    public ReplyDTO getErrorDTO(String userEmail, Long conversationId) {
+        User user = userService.getUserByEmail(userEmail);
+        ReplyDTO errorReply = new ReplyDTO();
+        errorReply.setId(conversationId);
+        errorReply.setLastMessageTimestamp(user.getResetTime().toString());
+        errorReply.setLastMessage("Kahjuks oled hetkel ületanud SEMU sõnumite piirangu. Kuid ära muretse - saad peatselt uuesti ligipääsu SEMU keskkonnale!");
+        return errorReply;
+    }
+
 
     public ReplyDTO getLastReplyDTO(Conversation conversation) {
         Long id = conversation.getId();

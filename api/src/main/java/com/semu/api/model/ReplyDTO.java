@@ -9,14 +9,17 @@ public class ReplyDTO {
     private String lastMessage;
     private String lastMessageTimestamp;
     private byte[] audio;
+    private boolean error;
 
     public ReplyDTO() {
+        this.error = false;
     }
 
     public ReplyDTO(Long id, String lastMessage, String lastMessageTimestamp) {
         this.id = id;
         this.lastMessage = lastMessage;
         this.lastMessageTimestamp = lastMessageTimestamp;
+        this.error = false;
     }
 
     public ReplyDTO(Long id, String lastMessage, String lastMessageTimestamp, byte[] audio) {
@@ -24,6 +27,7 @@ public class ReplyDTO {
         this.lastMessage = lastMessage;
         this.lastMessageTimestamp = lastMessageTimestamp;
         this.audio = audio;
+        this.error = false;
     }
 
 
@@ -65,5 +69,9 @@ public class ReplyDTO {
 
     public void setAudio(byte[] audio) {
         this.audio = audio;
+    }
+
+    public void setError() {
+        this.error = true;
     }
 }

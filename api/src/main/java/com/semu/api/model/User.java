@@ -2,6 +2,8 @@ package com.semu.api.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -12,6 +14,9 @@ public class User {
     private String lastName;
     private String email;
     private String passwordHash;
+    private int messageCount;
+    private LocalDateTime resetTime;
+    private boolean administrator;
 
     public String getFullName() {
         return firstName + " " + lastName;
@@ -22,6 +27,8 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.passwordHash = passwordHash;
+        this.messageCount = 0;
+        this.administrator = false;
     }
 
     public User() {
@@ -47,6 +54,18 @@ public class User {
         return lastName;
     }
 
+    public int getMessageCount() {
+        return messageCount;
+    }
+
+    public LocalDateTime getResetTime() {
+        return resetTime;
+    }
+
+    public boolean isAdministrator() {
+        return administrator;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -65,6 +84,18 @@ public class User {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public void setMessageCount(int messageCount) {
+        this.messageCount = messageCount;
+    }
+
+    public void setResetTime(LocalDateTime resetTime) {
+        this.resetTime = resetTime;
+    }
+
+    public void setAdministrator(boolean administrator) {
+        this.administrator = administrator;
     }
 
 }

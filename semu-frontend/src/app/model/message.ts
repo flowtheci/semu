@@ -7,4 +7,5 @@ export interface Message {
   isTypeable: boolean;
   fast?: boolean;
   isImage?: boolean;
+  rateLimitReached?: boolean;
 }

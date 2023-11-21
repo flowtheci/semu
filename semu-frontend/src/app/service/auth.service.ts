@@ -86,5 +86,17 @@ export class AuthService {
     return current < expirationDate;
   }
 
+  saveRateLimit(validUntil: string) {
+    localStorage.setItem('rateLimit', validUntil);
+  }
+
+  getRateLimit(): string {
+    return localStorage.getItem('rateLimit') || '';
+  }
+
+  deleteRateLimit() {
+    localStorage.removeItem('rateLimit');
+  }
+
 
 }
