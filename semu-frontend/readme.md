@@ -35,20 +35,16 @@ To set up the project, follow these steps:
 To run the Angular frontend on your local machine, use the Angular CLI command:
 
 ```
-ng serve
+ng serve --c dev
 ```
 
 This will compile the application and serve it by default on `http://localhost:4200`. Open your browser and navigate to this URL to view the application.
 
 ## Configuration
 
-The frontend API URL can be changed in the `app.component.ts` file. Locate the following line of code and set to true to enable local backend hosting.
+When serving the application, you can specify a configuration file to use by passing the `--c` flag with the name of the configuration file.
+The recommended configuration while development is 'dev', which uses the `environment.dev.ts` options (local backend API url and no route guards). If you want to serve the application with the production configuration, use `ng serve` with no flags. This will use the live backend API url and will enable all authentication guards.
 
-```
-export const backendUrl = false ? 'http://localhost:8080/api/' : 'https://tribal-saga-397814.lm.r.appspot.com/api/';
-```
-
-Make sure to replace `http://your-backend-url-here/api` with the actual URL of your backend service.
 
 ## Building for Production
 
