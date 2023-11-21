@@ -1,7 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
+  ElementRef, HostListener,
   Input,
   NgZone,
   OnChanges,
@@ -16,6 +16,7 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import * as RecordRTC from 'recordrtc';
 import {AuthService} from "../../service/auth.service";
 import {environment} from "../../../environments/environment";
+import {ViewportScroller} from "@angular/common";
 
 
 @Component({
@@ -61,6 +62,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() isOpen = false;
   @Input() conversationIdToLoad: string = '';
 
+
   messages: Message[] = [];
   messageIndex = -1;
   isTyping = false;
@@ -81,6 +83,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   private pollInterval = 125;
   private maxInterval = 32000;
   private exponentialBackoff = 1.5;
+  private _preventDefault = (e: { preventDefault: () => any; }) => e.preventDefault();
   userLabel = '<span class="label">Sina\n</span>';
   assistantLabel = '<span class="label">SEMU\n</span>';
 
@@ -104,6 +107,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     private http: HttpClient,
     private zone: NgZone,
     private authService: AuthService,
+    private viewportScroller: ViewportScroller,
     ) {
   }
 
@@ -159,12 +163,24 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
+
   onKeyboardFocus() {
+    setTimeout(() => window.scrollTo(0,0), 25)
     this.keyboardFocused = true;
+
+    if (this.isMobile) {
+      document.addEventListener('touchmove', this._preventDefault, { passive: false });
+      document.addEventListener('touchforcechange', this._preventDefault, { passive: false });
+    }
   }
 
   onKeyboardFocusOut() {
     this.keyboardFocused = false;
+    this.viewportScroller.scrollToPosition([0,0]);
+    if (this.isMobile) {
+      document.removeEventListener('touchmove', this._preventDefault, false);
+      document.removeEventListener('touchforcechange', this._preventDefault, false);
+    }
   }
 
   startCountdownLoop(countdownTime: number) {
