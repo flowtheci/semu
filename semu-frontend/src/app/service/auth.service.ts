@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {backendUrl} from "../app.component";
 import {Router} from "@angular/router";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +30,7 @@ export class AuthService {
       'Content-Type': 'application/json',
     }
 
-    this.http.post(backendUrl + 'users/authenticate?email=' + email + '&password=' + password, {headers: headers}).subscribe((response: any) => {
+    this.http.post(environment.apiUrl + 'users/authenticate?email=' + email + '&password=' + password, {headers: headers}).subscribe((response: any) => {
       console.warn(response);
       localStorage.setItem('authToken', response.token);
       this.router.navigate(['/home']);
@@ -51,7 +51,7 @@ export class AuthService {
       lastName: lastName
     }
 
-    this.http.post(backendUrl + 'users/register', body, {headers: headers}).subscribe((response: any) => {
+    this.http.post(environment.apiUrl + 'users/register', body, {headers: headers}).subscribe((response: any) => {
       console.warn(response);
       localStorage.setItem('authToken', response.token);
       this.router.navigate(['/home']);

@@ -12,10 +12,10 @@ import {
 import {Message} from 'src/app/model/message';
 import {SemuService} from "../../service/semu.service";
 import {HttpClient} from "@angular/common/http";
-import {backendUrl} from "../../app.component";
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import * as RecordRTC from 'recordrtc';
 import {AuthService} from "../../service/auth.service";
+import {environment} from "../../../environments/environment";
 
 
 @Component({
@@ -66,6 +66,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   isTyping = false;
   userIsTyping = false;
   isRecording = false;
+  keyboardFocused = false;
 
   _rateLimited = false;
 
@@ -156,6 +157,14 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
         this.authService.deleteRateLimit();
       }
     }
+  }
+
+  onKeyboardFocus() {
+    this.keyboardFocused = true;
+  }
+
+  onKeyboardFocusOut() {
+    this.keyboardFocused = false;
   }
 
   startCountdownLoop(countdownTime: number) {
@@ -330,7 +339,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     const conversationIdParam = this.hasConversationId ? `?conversationId=${this.conversationId}` : '';
     formData.append('audioMessage', audioFile);
 
-    const response = this.http.post(backendUrl + 'conversations' + endpoint + conversationIdParam, formData);
+    const response = this.http.post(environment.apiUrl + 'conversations' + endpoint + conversationIdParam, formData);
     return response.toPromise().then(async (response: any) => {
       this.userIsTyping = false;
       this.messages.push({
@@ -351,7 +360,7 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
 
   async getAudioResponse(id: string) {
     try {
-      await this.http.get(backendUrl + 'conversations/getAudioResponse?conversationId=' + id).toPromise()
+      await this.http.get(environment.apiUrl + 'conversations/getAudioResponse?conversationId=' + id).toPromise()
         .then((response: any) => {
           if (response.content) {
             const newId = this.messages[this.messages.length - 1].id + 1;

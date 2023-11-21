@@ -3,8 +3,8 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import { PromptUtil} from "../prompts";
 import {Message} from "../model/message";
-import {backendUrl} from "../app.component";
 import {AuthService} from "./auth.service";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -90,7 +90,7 @@ export class SemuService {
         'Content-Type': 'application/json',
       };
 
-      const response = this.http.get(backendUrl + 'conversations/getAllUserConversations', {headers});
+      const response = this.http.get(environment.apiUrl + 'conversations/getAllUserConversations', {headers});
       return response.toPromise().then((response: any) => {
         return response;
       });
@@ -108,7 +108,7 @@ export class SemuService {
         'Content-Type': 'application/json',
       };
 
-      const response = this.http.get(backendUrl + 'conversations/getLastConversationTitles?amount=' + amount, {headers});
+      const response = this.http.get(environment.apiUrl + 'conversations/getLastConversationTitles?amount=' + amount, {headers});
       return response.toPromise().then((response: any) => {
         return response;
       });
@@ -126,7 +126,7 @@ export class SemuService {
         'Content-Type': 'application/json',
       };
 
-      const response = this.http.get(backendUrl + 'conversations/getConversation?conversationId=' + id, {headers});
+      const response = this.http.get(environment.apiUrl + 'conversations/getConversation?conversationId=' + id, {headers});
       return response.toPromise().then((response: any) => {
         console.error(response);
         setTimeout(
@@ -174,9 +174,9 @@ export class SemuService {
     const isFirstMessage = prompt.length === 1;
     try {
       const response = isFirstMessage
-        ? this.http.post(backendUrl + 'conversations/start' + (isImage ? 'Image' : '') + 'Conversation',
+        ? this.http.post(environment.apiUrl + 'conversations/start' + (isImage ? 'Image' : '') + 'Conversation',
           isImage ? lastMessage : finalMessages, {headers})
-        : this.http.post(backendUrl + 'conversations/add' + (isImage ? 'Image' : '') + 'Message?conversationId=' + this.getLastConversationId(),
+        : this.http.post(environment.apiUrl + 'conversations/add' + (isImage ? 'Image' : '') + 'Message?conversationId=' + this.getLastConversationId(),
           finalMessages[finalMessages.length-1], {headers});
 
       return response.toPromise().then((response: any) => {

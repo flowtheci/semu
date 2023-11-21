@@ -322,6 +322,10 @@
       &.safe-area {
         padding-bottom: 11vh;
       }
+
+      &.keyboard-open {
+        margin-bottom: 16px;
+      }
     }
 
     .chat-messages {
