@@ -64,7 +64,7 @@ public class AssistantClient {
 
         String runId = doPostRequest(runUrl, new HttpEntity<>(body, headers), "id");
         System.out.println("Running assistant " + prompt + "with run id " + runId + " on thread " + conversation.getThreadId());
-        while (!checkIfRunFinished(runId, conversation.getThreadId()) && Instant.now().isBefore(timestamp.plusSeconds(30))) {
+        while (!checkIfRunFinished(runId, conversation.getThreadId()) && Instant.now().isBefore(timestamp.plusSeconds(60))) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
