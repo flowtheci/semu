@@ -25,7 +25,7 @@ export class TypewriterComponent implements OnInit, OnChanges {
   @ViewChild('blinkingCursor', { static: true }) blinkingCursorElement!: ElementRef;
   index = 0;
   typeSpeed = 50;
-  fastTypeSpeed = 10;
+  fastTypeSpeed = 2;
   text = '';
   displayText = '';
 

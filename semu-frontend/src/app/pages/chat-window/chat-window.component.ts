@@ -59,6 +59,8 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('messageBox', {read: ElementRef}) chatWindowElement: ElementRef<any> | undefined;
   @ViewChild('bottomAnchor') bottomAnchor!: HTMLElement;
   @ViewChild('fileInput') fileInput!: ElementRef;
+  @ViewChild('container') container!: ElementRef;
+  @ViewChild('sendButton') sendButton!: ElementRef;
   @Input() isOpen = false;
   @Input() conversationIdToLoad: string = '';
 
@@ -140,7 +142,9 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     if (changes['conversationIdToLoad']) {
       console.warn("NEW!!!!")
       this.conversationId = this.conversationIdToLoad;
-      this.loadConversation();
+      if (this.conversationId != '0') {
+        this.loadConversation();
+      }
     }
   }
 
@@ -169,8 +173,8 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     this.keyboardFocused = true;
 
     if (this.isMobile) {
-      document.addEventListener('touchmove', this._preventDefault, { passive: false });
-      document.addEventListener('touchforcechange', this._preventDefault, { passive: false });
+      this.container.nativeElement.addEventListener('touchmove', this._preventDefault, { passive: false });
+      this.container.nativeElement.addEventListener('touchforcechange', this._preventDefault, { passive: false });
     }
   }
 
@@ -178,8 +182,8 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
     this.keyboardFocused = false;
     this.viewportScroller.scrollToPosition([0,0]);
     if (this.isMobile) {
-      document.removeEventListener('touchmove', this._preventDefault, false);
-      document.removeEventListener('touchforcechange', this._preventDefault, false);
+      this.container.nativeElement.removeEventListener('touchmove', this._preventDefault, false);
+      this.container.nativeElement.removeEventListener('touchforcechange', this._preventDefault, false);
     }
   }
 
@@ -248,6 +252,9 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   async onSendMessage(message: string, elementRef?: HTMLTextAreaElement, isImage?: boolean): Promise<void> {
+    if (message === '') {
+      return;
+    }
     if (elementRef) {
       elementRef.value = '';
     }
@@ -268,15 +275,15 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnChanges {
 
 
     const response = this.semuService.responseAsMessage(this.messages, isImage);
-    response.then((response: Message) => {
+    response.then(async (response: Message) => {
       this.isTyping = false;
       this.messages.push(response);
       this.messageIndex++;
       this.scroll();
       this.semuService.playLastAudio();
-      if (this.conversationTitle === '') {
+      if (this.messages.length === 2) {
         this.conversationId = this.semuService.getLastConversationId();
-        this.conversationTitle = this.semuService.getLastTitle();
+        this.conversationTitle = await this.semuService.aiTitle(this.conversationId);
       }
       if (!this.conversationArray.includes(parseInt(this.conversationId))) {
         this.conversationArray.push(parseInt(this.conversationId));

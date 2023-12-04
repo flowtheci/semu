@@ -193,4 +193,14 @@ public class ConversationController {
     }
 
 
+    @GetMapping("/generateTitle")
+    public ResponseEntity<TitleDTO> generateTitle(@RequestHeader(name = "Authorization") String authToken, @RequestParam Long conversationId) {
+        String email = jwtService.validateTokenAndGetSubject(authToken.substring(7));
+        if (email == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(conversationService.generateTitle(email, conversationId));
+    }
+
+
 }

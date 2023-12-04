@@ -7,7 +7,7 @@
   font-weight: 700;
   font-style: normal;
 }
-
+@import 'ngx-toastr/toastr';
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 
@@ -40,5 +40,9 @@ body {
   font-size: 14px;
   font-style: normal;
   font-weight: 200;
+}
+
+.toast-top-center {
+  top: 30px;
 }
 

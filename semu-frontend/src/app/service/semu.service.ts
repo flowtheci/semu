@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import { PromptUtil} from "../prompts";
+import {PromptUtil} from "../prompts";
 import {Message} from "../model/message";
 import {AuthService} from "./auth.service";
 import {environment} from "../../environments/environment";
@@ -121,6 +120,9 @@ export class SemuService {
   }
 
   getConversationById(id: string): Promise<object> {
+    if (id === '') {
+      return Promise.resolve({});
+    }
     try {
       const headers = {
         'Content-Type': 'application/json',
@@ -179,18 +181,18 @@ export class SemuService {
         : this.http.post(environment.apiUrl + 'conversations/add' + (isImage ? 'Image' : '') + 'Message?conversationId=' + this.getLastConversationId(),
           finalMessages[finalMessages.length-1], {headers});
 
-      return response.toPromise().then((response: any) => {
-        this._lastConversationId = response.id;
-        this._lastTitle = response.title;
-        this._lastConversationReachedLimit = false;
-        if (response?.audio) {
-          this.storeAudio(response.audio);
-        } else {
-          this._lastAudioUrl = '';
-        }
-        return response.lastMessage;
-      },
-        (error) => {
+      return response.toPromise().then(
+        (response: any) => {
+          this._lastConversationId = response.id;
+          this._lastConversationReachedLimit = false;
+          if (response?.audio) {
+            this.storeAudio(response.audio);
+          } else {
+            this._lastAudioUrl = '';
+          }
+          return response.lastMessage;
+        },
+        (error: any) => {
           if (error.status === 423) {
             console.warn('User rate limited');
             console.warn(error);
@@ -199,11 +201,24 @@ export class SemuService {
             this._lastRateLimit = error.error.lastMessageTimestamp;
             return error.error.lastMessage;
           }
-        });
+        }
+      );
 
     } catch (error) {
       console.error('Error calling backend API:', error);
       throw error;
     }
+  }
+
+  async aiTitle(id: string): Promise<string> {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    const titleResponse = this.http.get(environment.apiUrl + 'conversations/generateTitle?conversationId=' + id, {headers});
+    return titleResponse.toPromise().then(
+      (response: any) => {
+        return response.title;
+      });
   }
 }

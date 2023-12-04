@@ -15,18 +15,15 @@ export class FirstVisitGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    if (!environment.production) {
-      return true;
-    }
 
     if (!this.authService.loggedIn) {
-      return this.router.createUrlTree(['/log-in']);
+      return this.router.navigate(['/']);
     }
 
     if (!this.authService.validateJwt()) {
       this.authService.logOut();
       localStorage.removeItem('authToken');
-      return this.router.createUrlTree(['/log-in']);
+      return this.router.navigate(['/']);
     }
 
     return true;
