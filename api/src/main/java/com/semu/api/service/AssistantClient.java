@@ -46,10 +46,6 @@ public class AssistantClient {
 
         addLastMessageToThread(conversation);
         run(conversation, prompt);
-
-        if (conversation.getTitle() == null) {
-            conversation.setTitle(generateTitle(conversation));
-        }
         return conversation;
     }
 
@@ -61,20 +57,24 @@ public class AssistantClient {
         Map<String, Object> body = new HashMap<>();
         body.put("assistant_id", assistantId);
         Instant timestamp = Instant.now();
+        int timeout = 1000;
 
         String runId = doPostRequest(runUrl, new HttpEntity<>(body, headers), "id");
         System.out.println("Running assistant " + prompt + "with run id " + runId + " on thread " + conversation.getThreadId());
-        while (!checkIfRunFinished(runId, conversation.getThreadId()) && Instant.now().isBefore(timestamp.plusSeconds(60))) {
+        if (Instant.now().isAfter(timestamp.plusSeconds(60))) {
+            // assistant run id on thread took too long, increasing timeout and retrying
+            System.out.println("Assistant " + prompt + " on run id " + runId + " on thread " + conversation.getThreadId() + " is taking long, retrying with increased timeout.");
+            timeout = 5000;
+        }
+        while (!checkIfRunFinished(runId, conversation.getThreadId())) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(timeout);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-        if (Instant.now().isAfter(timestamp.plusSeconds(60))) {
-            throw new RuntimeException("Run took too long, cancelled.");
-        }
+
 
         updateConversationWithResponse(conversation);
     }

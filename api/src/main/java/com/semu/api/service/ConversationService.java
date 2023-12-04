@@ -46,6 +46,18 @@ public class ConversationService {
         return conversationQueue.get(id) == JobState.FINISHED;
     }
 
+    public TitleDTO generateTitle(String userEmail, Long conversationId) {
+        User user = userService.getUserByEmail(userEmail);
+        Conversation conversation = conversationRepository.findByIdAndUser(conversationId, user);
+        if (conversation == null) {
+            return new TitleDTO("", conversationId);
+        }
+        String title = assistantClient.generateTitle(conversation);
+        conversation.setTitle(title);
+        conversationRepository.save(conversation);
+        return new TitleDTO(title, conversationId);
+    }
+
 
     public Conversation processQueue(Long id) {
         try {
@@ -147,10 +159,20 @@ public class ConversationService {
 
     public ReplyDTO getLastReplyDTO(Conversation conversation) {
         Long id = conversation.getId();
-        String lastMessage = conversation.getLastMessage().getContent();
-        // byte[] audio = voiceClient.synthesizeVoice(lastMessage);
-        return new ReplyDTO(id, lastMessage, String.valueOf(System.currentTimeMillis()));
+        List<Message> messages = conversation.getMessages();
+        StringBuilder assistantMessages = new StringBuilder();
+
+        for (Message message : messages) {
+            if (!message.isUser()) {
+                assistantMessages.append(message.getContent()).append("\n");
+            } else {
+                assistantMessages = new StringBuilder();
+            }
+        }
+
+        return new ReplyDTO(id, assistantMessages.toString(), String.valueOf(System.currentTimeMillis()));
     }
+
 
     public TranscriptionDTO getTranscriptionDTO(Conversation conversation) {
         return new TranscriptionDTO(conversation.getId(), conversation.getTitle(), conversation.getLastUserMessage().getContent());

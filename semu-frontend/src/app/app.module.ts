@@ -13,10 +13,10 @@ import { UserSetupComponent } from './components/user-setup/user-setup.component
 import { LogoComponent } from './components/logo/logo.component';
 import {PromptUtil} from "./prompts";
 import {JwtModule} from "@auth0/angular-jwt";
-import { ServiceWorkerModule } from '@angular/service-worker';
 import {MathjaxModule} from "mathjax-angular";
 import { VoiceRecorderComponent } from './components/voice-recorder/voice-recorder.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {ToastrModule} from "ngx-toastr";
 
 export function tokenGetter() {
   return localStorage.getItem("authToken");
@@ -32,13 +32,14 @@ export function tokenGetter() {
     TypewriterComponent,
     UserSetupComponent,
     LogoComponent,
-    VoiceRecorderComponent
+    VoiceRecorderComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
+    ToastrModule.forRoot(),
     MathjaxModule.forRoot({config: {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -56,12 +57,6 @@ export function tokenGetter() {
         tokenGetter: tokenGetter,
         allowedDomains: ["semu-api.fly.dev", "localhost:8080", "tribal-saga-397814.lm.r.appspot.com"],
       },
-    }),
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
     }),
   ],
   providers: [PromptUtil],

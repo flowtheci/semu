@@ -70,14 +70,14 @@ public class VisionClient {
     }
 
     public static String getMathVisionPrompt() {
-        return "Palun tuvastage ja kirjeldage pildil esitatud matemaatilisi elemente. Kui pildil on matemaatilised ülesanded" +
-                " või valemid, palun teisendage need LaTeX formaati. Kui tegemist on teooriaküsimustega, palun kirjeldage" +
-                " küsimuse sisu ja konteksti. Tekstülesannete puhul palun kirjutage välja kogu relevantne ülesande tekst. Graafide" +
-                " korral palun esitage graafiku pealkiri, telgede kirjeldus, oluliste punktide asukohad ja funktsiooni" +
-                " või andmete iseloomustus. Kui pildil on mitu matemaatilist elementi, palun esitage igaühe kohta eraldi" +
-                " kirjeldus järjekorras, milles need pildil esinevad. Kui pilt koosneb vaid matemaatilistest elementidest," +
-                " siis ära kirjelda pilti, vaid vasta vaid LaTeX kujul matemaatilise tehtega. Alusta oma vastust sõnadega 'Kasutaja pildi kirjeldus:'"+
-                ". Ära mingil juhul ülesannet lahenda - sinu töö on vaid pildi kirjeldamine.";
+        return "Sa oled matemaatika visuaalne assistant teisele AI teenusele mis on matemaatiline assistant. Sinu ülesandeks" +
+                " on analüüsida pilte mis sulle saadetakse, ning tagastada vastus mis sisaldab ainult antud pildi matemaatilist sisu." +
+                " Pilt võib olla näiteks matemaatika ülesanne, graafik, tabel, joonis, tekstülesanne jne. Sinu ülesanne EI OLE lahendada" +
+                " matemaatika ülesannet, vaid analüüsida pilti ning tagastada vastus mis sisaldab vaid olulist pildi matemaatilist sisu nii lühidalt ja täpselt kui võimalik." +
+                " Matemaatiliste elementide kuvamiseks kasuta vormistuseks LaTeX (Mathjax ehk ainult matemaatiliste elementide) kuju, mitte Markdowni. Näiteks: $x^2$ mitte x^2. " +
+                "Jällegi, vastuses peaks olema võimalikult vähe sõnu, ning peaks kirjeldama vaid pildil olevaid elemente mis on vaja ülesande lahendamiseks. " +
+                "Matemaatikaga mitte seotud piltide analüüsimisel tagasta järgnev:" +
+                "\"Pildi analüüsimine ebaõnnestus, kuna (PÕHJUS).\" - kus (PÕHJUS) on ebaõnnestumise põhjus.";
 
     }
 }
