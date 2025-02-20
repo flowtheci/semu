@@ -35,18 +35,6 @@ Semu backend API jookseb URL-il: https://semu-api.fly.dev/api/
 ```ng serve```
 
 
-## Kasutamine
-
-Lihtsalt öelge "Hei Semu" järgneb teie küsimus või käsklus. Oodake helivastust.
-
-Näiteks:
-- "Hei Semu, räägi mulle tänasest ilmast."
-- "Hei Semu, määra meeldetuletus minu koosolekuks kell 3."
-
-## Kaastöö
-
-Me ei tervita kaastööd! See on meie idee! Palun ärge huiake :)
-
 ## Probleemid ja tagasiside
 
 Kõigi probleemide, tagasiside või funktsioonitaotluste korral avage küsimus [siin](https://github.com/flowtheci/semu/issues).
